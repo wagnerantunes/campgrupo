@@ -253,21 +253,33 @@ Mensagem: ${message}
 
 // --- PROTECTED ROUTES ---
 
+import fs from 'fs';
+
 app.post('/api/config', authenticateToken, async (req, res) => {
     try {
         const configData = req.body;
-        console.log('--- Updating Site Config ---');
+        console.log('--- RECEIVED CONFIG UPDATE REQUEST ---');
+        
+        // Validate if it's an object
+        if (typeof configData !== 'object' || configData === null) {
+            throw new Error('Invalid config data: Expected object');
+        }
+
         const queryText = `
-      INSERT INTO site_config (key, data)
-      VALUES ($1, $2)
-      ON CONFLICT (key) DO UPDATE SET data = $2, updated_at = CURRENT_TIMESTAMP
-    `;
+            INSERT INTO site_config (key, data)
+            VALUES ($1, $2)
+            ON CONFLICT (key) DO UPDATE SET data = $2, updated_at = CURRENT_TIMESTAMP
+        `;
+        
         await query(queryText, ['current_config', configData]);
-        console.log('Config updated successfully');
+        console.log('✅ Config saved to Database successfully');
         res.json({ success: true });
     } catch (err) {
-        console.error('DATABASE ERROR on /api/config:', err);
-        res.status(500).json({ error: (err as Error).message });
+        console.error('❌ DATABASE ERROR on /api/config:', err);
+        res.status(500).json({ 
+            error: 'Erro ao salvar no banco de dados',
+            details: (err as Error).message 
+        });
     }
 });
 
@@ -277,7 +289,43 @@ app.post('/api/upload', authenticateToken, upload.single('image'), (req, res) =>
     }
     // Usa a BASE_URL vinda do .env para a URL real
     const imageUrl = `${BASE_URL}/uploads/${req.file.filename}`;
-    res.json({ url: imageUrl });
+    res.json({ url: imageUrl, filename: req.file.filename });
+});
+
+// MEDIA MANAGER ROUTES
+app.get('/api/media', authenticateToken, (req, res) => {
+    const uploadsDir = path.join(__dirname, 'uploads');
+    fs.readdir(uploadsDir, (err, files) => {
+        if (err) {
+            return res.status(500).json({ error: 'Erro ao listar arquivos' });
+        }
+        const media = files
+            .filter(file => !file.startsWith('.'))
+            .map(file => ({
+                filename: file,
+                url: `${BASE_URL}/uploads/${file}`,
+                time: fs.statSync(path.join(uploadsDir, file)).mtime
+            }))
+            .sort((a, b) => b.time.getTime() - a.time.getTime());
+        res.json(media);
+    });
+});
+
+app.delete('/api/media/:filename', authenticateToken, (req, res) => {
+    const filename = req.params.filename;
+    const filePath = path.join(__dirname, 'uploads', filename);
+    
+    // Security: prevent path traversal
+    if (filename.includes('..') || filename.includes('/')) {
+        return res.status(400).json({ error: 'Filename inválido' });
+    }
+
+    fs.unlink(filePath, (err) => {
+        if (err) {
+            return res.status(500).json({ error: 'Erro ao deletar arquivo' });
+        }
+        res.json({ success: true });
+    });
 });
 
 app.get('/api/leads', authenticateToken, async (req, res) => {
@@ -289,7 +337,16 @@ app.get('/api/leads', authenticateToken, async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`Server running at ${BASE_URL} (Port: ${port})`);
+app.delete('/api/leads/:id', authenticateToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+        await query('DELETE FROM leads WHERE id = $1', [id]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: (err as Error).message });
+    }
 });
 
+app.listen(port, () => {
+    console.log(`🚀 Server running at ${BASE_URL} (Port: ${port})`);
+});

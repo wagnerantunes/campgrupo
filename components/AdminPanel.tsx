@@ -13,33 +13,63 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
     const { token, logout } = useAuth();
     const [tempConfig, setTempConfig] = useState(currentConfig);
     const [uploading, setUploading] = useState(false);
-    const [activeTab, setActiveTab] = useState<'config' | 'leads'>('config');
+    const [activeTab, setActiveTab] = useState<'config' | 'leads' | 'media'>('config');
     const [leads, setLeads] = useState<any[]>([]);
+    const [media, setMedia] = useState<any[]>([]);
 
     useEffect(() => {
         if (activeTab === 'leads') {
             fetchLeads();
+        } else if (activeTab === 'media') {
+            fetchMedia();
         }
     }, [activeTab]);
 
     const fetchLeads = async () => {
         try {
             const response = await fetch(`${API_URL}/leads`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (response.ok) setLeads(await response.json());
+        } catch (error) { console.error(error); }
+    };
+
+    const fetchMedia = async () => {
+        try {
+            const response = await fetch(`${API_URL}/media`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (response.ok) setMedia(await response.json());
+        } catch (error) { console.error(error); }
+    };
+
+    const deleteMedia = async (filename: string) => {
+        if (!window.confirm('Excluir esta imagem permanentemente?')) return;
+        try {
+            const response = await fetch(`${API_URL}/media/${filename}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
             });
             if (response.ok) {
-                const data = await response.json();
-                setLeads(data);
-            } else {
-                toast.error('Erro ao carregar leads');
+                toast.success('Arquivo excluído');
+                fetchMedia();
             }
-        } catch (error) {
-            console.error(error);
-            toast.error('Erro de conexão');
-        }
+        } catch (error) { toast.error('Erro ao excluir'); }
     };
+
+    const deleteLead = async (id: number) => {
+        if (!window.confirm('Excluir este lead permanentemente?')) return;
+        try {
+            const response = await fetch(`${API_URL}/leads/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (response.ok) {
+                toast.success('Lead excluído');
+                fetchLeads();
+            }
+        } catch (error) { toast.error('Erro ao excluir'); }
+    }
 
     const handleUpdate = (path: string, value: any) => {
         const keys = path.split('.');
@@ -120,7 +150,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                             className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all flex items-center gap-2 ${activeTab === 'leads' ? 'bg-white text-navy-blue shadow-sm' : 'text-white/70 hover:text-white'}`}
                         >
                             Leads (Contatos)
-                            {/* Badge count could go here */}
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('media')}
+                            className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all flex items-center gap-2 ${activeTab === 'media' ? 'bg-white text-navy-blue shadow-sm' : 'text-white/70 hover:text-white'}`}
+                        >
+                            Mídia (Imagens)
                         </button>
                     </div>
                 </div>
@@ -260,12 +295,19 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                                     <div className="bg-gray-50 p-4 rounded-xl space-y-4">
                                         <div className="flex flex-col gap-2">
                                             <label className="text-xs font-bold text-gray-500 uppercase">Escolher Foto de Fundo</label>
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={(e) => handleFileUpload(e, 'hero.image')}
-                                                className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-navy-blue file:text-white hover:file:bg-navy-light cursor-pointer"
-                                            />
+                                            <div className="flex items-center gap-4">
+                                                {tempConfig.hero.image && (
+                                                    <div className="w-20 h-20 rounded-lg overflow-hidden border bg-gray-200">
+                                                        <img src={tempConfig.hero.image} alt="Thumbnail" className="w-full h-full object-cover" />
+                                                    </div>
+                                                )}
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={(e) => handleFileUpload(e, 'hero.image')}
+                                                    className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-navy-blue file:text-white hover:file:bg-navy-light cursor-pointer"
+                                                />
+                                            </div>
                                         </div>
                                         <div className="flex flex-col gap-2">
                                             <label className="text-xs font-bold text-gray-500 uppercase">Ou URL da Imagem</label>
@@ -670,7 +712,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                                 </div>
                             </div>
                         </section>
-                    ) : (
+                    ) : activeTab === 'leads' ? (
                         <div className="space-y-6">
                             <h2 className="text-2xl font-bold text-navy-blue">Leads Capturados</h2>
                             <div className="grid grid-cols-1 gap-4">
@@ -703,11 +745,58 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                                                     </p>
                                                 </div>
                                             </div>
-                                            {lead.message && (
-                                                <div className="flex-1 bg-gray-50 p-4 rounded-lg text-sm text-gray-700 italic border-l-4 border-primary">
-                                                    "{lead.message}"
+                                            <div className="flex flex-col gap-2 items-end">
+                                                {lead.message && (
+                                                    <div className="bg-gray-50 p-4 rounded-lg text-sm text-gray-700 italic border-l-4 border-primary">
+                                                        "{lead.message}"
+                                                    </div>
+                                                )}
+                                                <button 
+                                                    onClick={() => deleteLead(lead.id)}
+                                                    className="text-red-400 hover:text-red-600 text-xs font-bold"
+                                                >
+                                                    Excluir Lead
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="space-y-6">
+                            <div className="flex justify-between items-center">
+                                <h2 className="text-2xl font-bold text-navy-blue">Biblioteca de Mídia</h2>
+                                <p className="text-sm text-gray-400">{media.length} arquivos no servidor</p>
+                            </div>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                                {media.length === 0 ? (
+                                    <div className="col-span-full bg-white p-12 text-center text-gray-400 rounded-xl">
+                                        Nenhuma imagem encontrada.
+                                    </div>
+                                ) : (
+                                    media.map((item: any) => (
+                                        <div key={item.filename} className="group relative bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all aspect-square">
+                                            <img src={item.url} alt={item.filename} className="w-full h-full object-cover" />
+                                            <div className="absolute inset-x-0 bottom-0 bg-black/60 p-2 opacity-0 group-hover:opacity-100 transition-all backdrop-blur-sm">
+                                                <div className="flex justify-between items-center text-[10px] text-white">
+                                                    <button 
+                                                        onClick={() => {
+                                                            navigator.clipboard.writeText(item.url);
+                                                            toast.success('Link copiado!');
+                                                        }}
+                                                        className="hover:text-primary transition-colors text-xs font-bold"
+                                                    >
+                                                        Copiar Link
+                                                    </button>
+                                                    <button 
+                                                        onClick={() => deleteMedia(item.filename)}
+                                                        className="hover:text-red-400 transition-colors"
+                                                    >
+                                                        <span className="material-symbols-outlined text-sm">delete</span>
+                                                    </button>
                                                 </div>
-                                            )}
+                                            </div>
                                         </div>
                                     ))
                                 )}
