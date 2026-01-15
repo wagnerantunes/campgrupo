@@ -57,7 +57,7 @@ app.use(cors({
     credentials: true
 }));
 
-app.use(express.json({ limit: '10kb' })); // Proteção contra payloads gigantes
+app.use(express.json({ limit: '1mb' })); // Proteção contra payloads gigantes
 app.use(generalLimiter);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

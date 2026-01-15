@@ -121,7 +121,7 @@ const AppContent: React.FC = () => {
     localStorage.setItem('campgrupo_assets', JSON.stringify(newConfig));
 
     try {
-      await fetch(`${API_URL}/config`, {
+      const response = await fetch(`${API_URL}/config`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -129,6 +129,10 @@ const AppContent: React.FC = () => {
         },
         body: JSON.stringify(newConfig)
       });
+      
+      if (!response.ok) {
+        throw new Error('Falha ao salvar no servidor');
+      }
     } catch (e) {
       console.error("Erro ao salvar no backend", e);
       throw e;
