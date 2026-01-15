@@ -1,16 +1,22 @@
 
 import React from 'react';
 
-const EfficiencyCTA: React.FC = () => {
-  const concreteImage = "https://images.unsplash.com/photo-1541888946425-d81bb19480c5?auto=format&fit=crop&q=80&w=2000";
+interface EfficiencyCTAProps {
+  config: {
+    image: string;
+  };
+}
+
+const EfficiencyCTA: React.FC<EfficiencyCTAProps> = ({ config }) => {
+  const concreteImage = config.image;
 
   return (
     <section className="relative min-h-[500px] flex items-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
-        <img 
-          src={concreteImage} 
-          alt="Concreto usinado sendo aplicado" 
+        <img
+          src={concreteImage}
+          alt="Concreto usinado sendo aplicado"
           className="w-full h-full object-cover"
         />
       </div>
@@ -22,7 +28,7 @@ const EfficiencyCTA: React.FC = () => {
         <div className="max-w-xl flex items-stretch gap-6">
           {/* Yellow Vertical Bar */}
           <div className="w-1.5 bg-yellow-500 rounded-full"></div>
-          
+
           <div className="py-4">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight tracking-tight">
               Grupo Camp une qualidade, custo-benefício e eficiência para a sua obra!

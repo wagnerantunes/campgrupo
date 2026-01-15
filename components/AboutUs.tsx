@@ -1,7 +1,13 @@
 
 import React from 'react';
 
-const AboutUs: React.FC = () => {
+interface AboutUsProps {
+  config: {
+    image: string;
+  };
+}
+
+const AboutUs: React.FC<AboutUsProps> = ({ config }) => {
   const features = [
     { icon: 'factory', label: 'Fabricação própria' },
     { icon: 'bolt', label: 'Entrega rápida' },
@@ -10,8 +16,7 @@ const AboutUs: React.FC = () => {
     { icon: 'groups', label: 'PF e PJ' },
     { icon: 'inventory_2', label: 'Pronta entrega' },
   ];
-
-  const industrialImage = "https://lh3.googleusercontent.com/aida-public/AB6AXuAzU0Pd8zaJyZ3r1pwLW_duFO2GU8Wa3QRCjIZuGuRz3u08sjPhjay9Ux-FR9XFVyq4NtUcDf90y5v-c9r7FS4ChfQ_83A1AScnyzk69YVUx1yYYWSUNJA8x6HT0ouhqIewy6VHB8xPbHAhQMB7eOLQx732F1TqVD9rZ_xYfQgG0kvsgAeH2lIiOQQ7GrKAuiEE5kr7cleyl_mA5UDQjrOjbjasJ2hBAywyPc8K1t1ctn5IJaM2y7FoOUuEM25A5qaPHlYMOkvG18jF";
+  const industrialImage = config.image;
 
   return (
     <section className="py-24 bg-white overflow-hidden" id="quem-somos">
@@ -25,7 +30,7 @@ const AboutUs: React.FC = () => {
               </span>
               <h2 className="text-4xl lg:text-5xl font-extrabold text-navy-blue leading-tight">Excelência em cada etapa</h2>
             </div>
-            
+
             <div className="flex flex-col gap-4 text-gray-700 text-lg leading-relaxed">
               <p>
                 No Grupo Camp, somos especialistas na fabricação de blocos de concreto e pisos intertravados com alto padrão de qualidade. Nossos produtos são paletizados e conferidos para garantir segurança e agilidade no canteiro de obras.
@@ -49,10 +54,12 @@ const AboutUs: React.FC = () => {
 
           <div className="lg:col-span-5 relative">
             <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
-              <div 
-                className="h-[600px] bg-center bg-cover" 
-                style={{ backgroundImage: `url('${industrialImage}')` }}
-              ></div>
+              <img
+                src={industrialImage}
+                alt="Estrutura Industrial do Grupo Camp em Monte Mor"
+                className="h-[600px] w-full object-cover"
+                loading="lazy"
+              />
             </div>
             <div className="absolute -bottom-10 -left-10 bg-navy-blue text-white p-8 rounded-2xl shadow-xl z-20">
               <div className="flex flex-col gap-1">

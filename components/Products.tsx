@@ -9,29 +9,12 @@ interface Product {
   features: string[];
 }
 
-const Products: React.FC = () => {
-  const products: Product[] = [
-    {
-      title: "Concreto Usinado",
-      description: "Controle de laboratório rigoroso, ideal para lajes e pilares com dosagem exata.",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAAQABhiunxHfWYh3ocRSZmE0CGV78dtyXeAATZu5U-KuIKfhucaqrBncLgGp6sZcBtDugDFvLeMeAIB0sw1El2f6fg1X18hQBWqxl6kVvxRJu_Q0hEj8Kfozpv0XwaGU2qYrWgnrlL6fuzIenUODc2SAJQ-eT8ifX5U3n1Sh1PTAXap4VlKbd0oBp-RRR1bpFx9jrhuLHul6v5bywju4IqbyRsBDyVhGGDlIUeh6QjoGDPEqsLCjGjLzifqVi4TUuHTNNLVXMKif0Q",
-      tag: "DESTAQUE",
-      features: ["Dosagem Eletrônica", "FCK Garantido"]
-    },
-    {
-      title: "Blocos de Concreto",
-      description: "Alta resistência e acabamento uniforme para economia de argamassa e tempo.",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDDbiRetCSL20EoDfXnlI_mcXOhjjEjRooDia7AYGSYf-l93hiBdl-tCsFkGPIrBig4sS7IJNav4-IKle9J61DSNLhe1H3U0X4xGLpYqxaIpWsbr6JXDzg2U_aWmhSgaG5kxeoZkU35BXx91bBWdpZr_j0q_lJWOrk_bWR0HFeVHfdnCwLBnC8Uz05xfudcR5qkMNNHzO1UYLEN9B_lmRICx1xXC5rD9imkKF0NxheC-0JmnU54aj8FbCC5AkiejVY3cdeYhMQjXV_9",
-      tag: "FABRICAÇÃO PRÓPRIA",
-      features: ["Padrão ABNT", "Paletizado"]
-    },
-    {
-      title: "Piso Intertravado",
-      description: "Sustentabilidade e estética para pátios, calçadas e garagens industriais.",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDYw23YsbsO7c99wo6ga4sZnAGOBExOI_iOtEbpCAZtxDgOT0-Uensx_nqazSPp_S9VpeUZI_zKit45oDM3pdv0su84A22dT8sC783vmB5eqp6bN0a79pW1adVDIzHkwPvJGkxipP092jt-05BvTQnGD2yludEsDztjyqsi1cWh8xPZ6QmWYlZuaJoJsI5GM4CDbZ5LJ47zLNTC7RQygOpkqtr0TXFKW5Nmj-6_Zi3tloGw6DvUkYqiSuuX6DRSxupa_DPJGGMMkmrf",
-      features: ["Alta Drenagem", "Resistente"]
-    }
-  ];
+interface ProductsProps {
+  config: any[];
+}
+
+const Products: React.FC<ProductsProps> = ({ config }) => {
+  const products = config;
 
   return (
     <section className="py-24 bg-gray-50" id="produtos">
@@ -50,10 +33,12 @@ const Products: React.FC = () => {
           {products.map((p, i) => (
             <div key={i} className="group bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-lg hover:-translate-y-1 transition-all">
               <div className="h-64 overflow-hidden relative">
-                <div 
-                  className="absolute inset-0 bg-center bg-cover group-hover:scale-105 transition-transform duration-500" 
-                  style={{ backgroundImage: `url('${p.image}')` }}
-                ></div>
+                <img
+                  src={p.image}
+                  alt={`${p.title} - Grupo Camp`}
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
                 {p.tag && (
                   <div className="absolute top-4 right-4 bg-navy-blue text-primary text-[10px] font-black px-2 py-1 rounded shadow-md uppercase tracking-wider">
                     {p.tag}
@@ -66,7 +51,7 @@ const Products: React.FC = () => {
                 <ul className="text-xs font-bold text-navy-blue flex flex-wrap gap-x-4 gap-y-2">
                   {p.features.map((feat, fi) => (
                     <li key={fi} className="flex items-center gap-1">
-                      <span className="material-symbols-outlined text-sm text-primary fill-1">check_circle</span> 
+                      <span className="material-symbols-outlined text-sm text-primary fill-1">check_circle</span>
                       {feat}
                     </li>
                   ))}

@@ -1,62 +1,99 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Grupo Camp | Concreto Usinado, Blocos e Pisos em Campinas</title>
-    <meta name="description" content="Grupo Camp: Líder em Concreto Usinado, Blocos de Concreto e Pisos Intertravados em Campinas e Região. Preço de fábrica, qualidade ABCP e entrega rápida." />
-    <meta name="keywords" content="concreto usinado campinas, blocos de concreto, piso intertravado preço, materiais de construção atacado, fábrica de blocos, concreto para laje, areia e pedra entrega, sumaré, hortolândia, paulínia" />
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#facc15", // Amarelo vibrante
-                        "navy-blue": "#0a1a6b", // Azul Marinho
-                        "navy-light": "#11237c",
-                        "background-light": "#f8fafc",
-                        "background-dark": "#050b2b",
-                        "slate-teal": "#0a1a6b", // Reutilizando azul marinho para manter compatibilidade
-                        "industrial-gray": "#e2e8f0"
-                    },
-                    fontFamily: {
-                        "sans": ["Manrope", "sans-serif"]
-                    }
-                }
-            }
-        }
+
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="Grupo Camp | Concreto Usinado, Blocos e Pisos em Campinas" />
+    <meta name="description"
+        content="Grupo Camp: Líder em Concreto Usinado, Blocos de Concreto e Pisos Intertravados em Campinas e Região. Preço de fábrica, qualidade ABCP e entrega rápida." />
+    <meta name="keywords"
+        content="concreto usinado campinas, blocos de concreto, piso intertravado preço, materiais de construção atacado, fábrica de blocos, concreto para laje, areia e pedra entrega, sumaré, hortolândia, paulínia" />
+    <link rel="canonical" href="https://campgrupo.com.br/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://campgrupo.com.br/" />
+    <meta property="og:title" content="Grupo Camp | Concreto Usinado, Blocos e Pisos em Campinas" />
+    <meta property="og:description"
+        content="Líder em Concreto Usinado e Blocos em Campinas. Qualidade ABCP e entrega rápida." />
+    <meta property="og:image"
+        content="https://lh3.googleusercontent.com/aida-public/AB6AXuClGt90Xwycrmig3tIx-GSyrUDzviZ5CMs637_tD-0RFNMe_ABTe741p7BUo6bAOi-GgRZdm8IhnPHmyFHX7oH7Bfy-9lWQgLaKi2-Jx0ezv6xN_Ev1dE0-56ST2-AE5M3ehB-eloow_e8TNueeQ4RFc4VpQ9PXbKXfZnVftqCk0CXcWqNSFye5T6moxFGCPsBVR8vX9pVcurosHdrJ0ESKN-nUOVbNVVKYrLzOQAS29TaneO7MKJIo4fvKrezRiG6aEshJfEqIBv3l" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="Grupo Camp | Concreto Usinado, Blocos e Pisos em Campinas" />
+    <meta property="twitter:description"
+        content="Líder em Concreto Usinado e Blocos em Campinas. Qualidade ABCP e entrega rápida." />
+
+    <!-- Fonts preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        rel="stylesheet" />
+
+    <!-- Structured Data (LocalBusiness) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Grupo Camp",
+      "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuClGt90Xwycrmig3tIx-GSyrUDzviZ5CMs637_tD-0RFNMe_ABTe741p7BUo6bAOi-GgRZdm8IhnPHmyFHX7oH7Bfy-9lWQgLaKi2-Jx0ezv6xN_Ev1dE0-56ST2-AE5M3ehB-eloow_e8TNueeQ4RFc4VpQ9PXbKXfZnVftqCk0CXcWqNSFye5T6moxFGCPsBVR8vX9pVcurosHdrJ0ESKN-nUOVbNVVKYrLzOQAS29TaneO7MKJIo4fvKrezRiG6aEshJfEqIBv3l",
+      "@id": "https://campgrupo.com.br",
+      "url": "https://campgrupo.com.br",
+      "telephone": "+5519999999999",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Rodovia SP-101",
+        "addressLocality": "Campinas",
+        "addressRegion": "SP",
+        "postalCode": "13000-000",
+        "addressCountry": "BR"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -22.9064,
+        "longitude": -47.0616
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday"
+        ],
+        "opens": "07:30",
+        "closes": "17:30"
+      },
+      "sameAs": [
+        "https://www.facebook.com/grupocamp",
+        "https://www.instagram.com/grupocamp"
+      ]
+    }
     </script>
-    <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .material-symbols-outlined.fill-1 {
-            font-variation-settings: 'FILL' 1;
-        }
-        html {
-            scroll-behavior: smooth;
-        }
-        body {
-            background-color: #f8fafc;
-            color: #0a1a6b;
-        }
-    </style>
-<script type="importmap">
-{
-  "imports": {
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3"
-  }
-}
-</script>
+
+    <!-- Google Tag Manager / Ads Placeholder (Insert IDs here) -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXX');
+      gtag('config', 'AW-XXXXXXXXX');
+    </script> -->
 </head>
+
 <body>
     <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
 </body>
+
 </html>

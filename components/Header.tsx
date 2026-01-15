@@ -1,17 +1,25 @@
 
 import React from 'react';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  config: {
+    icon: string;
+    text: string;
+    subtext: string;
+  };
+}
+
+const Header: React.FC<HeaderProps> = ({ config }) => {
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="bg-navy-blue text-primary p-2 rounded-lg">
-            <span className="material-symbols-outlined text-3xl fill-1">foundation</span>
+            <span className="material-symbols-outlined text-3xl fill-1">{config.icon}</span>
           </div>
           <div className="flex flex-col">
-            <span className="text-xl font-extrabold tracking-tight leading-none text-navy-blue">GRUPO CAMP</span>
-            <span className="text-[10px] uppercase tracking-[0.2em] text-primary font-black bg-navy-blue px-1 mt-1 rounded-sm w-fit">Indústria</span>
+            <span className="text-xl font-extrabold tracking-tight leading-none text-navy-blue">{config.text}</span>
+            <span className="text-[10px] uppercase tracking-[0.2em] text-primary font-black bg-navy-blue px-1 mt-1 rounded-sm w-fit">{config.subtext}</span>
           </div>
         </div>
 

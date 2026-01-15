@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres:15
+    container_name: campgrupo_db
+    restart: always
+    environment:
+      POSTGRES_USER: camp_user
+      POSTGRES_PASSWORD: camp_password
+      POSTGRES_DB: campgrupo_assets
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: campgrupo_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@campgrupo.com
+      PGADMIN_DEFAULT_PASSWORD: admin_password
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
