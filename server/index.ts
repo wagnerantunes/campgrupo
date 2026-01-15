@@ -13,6 +13,7 @@ import rateLimit from 'express-rate-limit';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const ROOT_DIR = path.resolve(); // Use project root for consistency
 
 // --- SECURITY MIDDLEWARE & LIGHT SANITIZATION ---
 
@@ -93,10 +94,10 @@ app.use(cors({
     credentials: true
 }));
 
-app.use(express.json({ limit: '1mb' })); // Proteção contra payloads gigantes
+app.use(express.json({ limit: '10mb' })); // Increased limit for larger configs
 app.use(xssSanitizer); // Sanitização profunda de todos os inputs
 app.use(generalLimiter);
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(ROOT_DIR, 'uploads')));
 
 // Health Check
 app.get('/health', (req, res) => res.json({ status: 'ok', time: new Date().toISOString() }));
@@ -104,7 +105,9 @@ app.get('/health', (req, res) => res.json({ status: 'ok', time: new Date().toISO
 // Configure Multer for image uploads
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/');
+        const uploadPath = path.join(ROOT_DIR, 'uploads');
+        if (!fs.existsSync(uploadPath)) fs.mkdirSync(uploadPath, { recursive: true });
+        cb(null, uploadPath);
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -348,7 +351,7 @@ app.post('/api/upload', authenticateToken, upload.single('image'), (req, res) =>
 
 // MEDIA MANAGER ROUTES
 app.get('/api/media', authenticateToken, (req, res) => {
-    const uploadsDir = path.join(__dirname, 'uploads');
+    const uploadsDir = path.join(ROOT_DIR, 'uploads');
     fs.readdir(uploadsDir, (err, files) => {
         if (err) {
             return res.status(500).json({ error: 'Erro ao listar arquivos' });

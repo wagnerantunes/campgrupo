@@ -387,12 +387,19 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                                     <div className="bg-gray-50 p-4 rounded-xl space-y-4">
                                         <div className="flex flex-col gap-2">
                                             <label className="text-xs font-bold text-gray-500 uppercase">Escolher Foto da Fábrica</label>
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={(e) => handleFileUpload(e, 'about.image')}
-                                                className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-navy-blue file:text-white hover:file:bg-navy-light cursor-pointer"
-                                            />
+                                            <div className="flex items-center gap-4">
+                                                {tempConfig.about.image && (
+                                                    <div className="w-20 h-20 rounded-lg overflow-hidden border bg-gray-200">
+                                                        <img src={tempConfig.about.image} alt="Thumbnail" className="w-full h-full object-cover" />
+                                                    </div>
+                                                )}
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={(e) => handleFileUpload(e, 'about.image')}
+                                                    className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-navy-blue file:text-white hover:file:bg-navy-light cursor-pointer"
+                                                />
+                                            </div>
                                         </div>
                                         <div className="flex flex-col gap-2">
                                             <label className="text-xs font-bold text-gray-500 uppercase">Ou URL da Imagem</label>
@@ -456,37 +463,41 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                                                 />
                                             </div>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                                                <div className="flex flex-col gap-1">
-                                                    <label className="text-[10px] font-bold text-gray-500 uppercase">Subir Foto</label>
-                                                    <input
-                                                        type="file"
-                                                        accept="image/*"
-                                                        onChange={(e) => {
-                                                            const file = e.target.files?.[0];
-                                                            if (file) {
-                                                                const path = `products.${i}.image`;
-                                                                handleFileUpload(e, path);
-                                                            }
-                                                        }}
-                                                        className="text-xs file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-primary file:text-navy-blue cursor-pointer"
-                                                    />
-                                                </div>
-                                                <div className="flex flex-col gap-1">
-                                                    <label className="text-[10px] font-bold text-gray-500 uppercase">URL ou Caminho</label>
-                                                    <input
-                                                        type="text"
-                                                        value={p.image}
-                                                        onChange={(e) => {
-                                                            const newProducts = [...tempConfig.products];
-                                                            newProducts[i].image = e.target.value;
-                                                            setTempConfig({ ...tempConfig, products: newProducts });
-                                                        }}
-                                                        className="border p-2 rounded-lg w-full text-xs"
-                                                    />
+                                                    <div className="flex items-center gap-3">
+                                                        {p.image && (
+                                                            <div className="w-10 h-10 rounded border overflow-hidden bg-gray-200 shrink-0">
+                                                                <img src={p.image} alt="Mini" className="w-full h-full object-cover" />
+                                                            </div>
+                                                        )}
+                                                        <input
+                                                            type="file"
+                                                            accept="image/*"
+                                                            onChange={(e) => {
+                                                                const file = e.target.files?.[0];
+                                                                if (file) {
+                                                                    const path = `products.${i}.image`;
+                                                                    handleFileUpload(e, path);
+                                                                }
+                                                            }}
+                                                            className="text-[10px] file:mr-2 file:py-1 file:px-2 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:bg-primary file:text-navy-blue cursor-pointer"
+                                                        />
+                                                    </div>
+                                                    <div className="flex flex-col gap-1">
+                                                        <label className="text-[10px] font-bold text-gray-500 uppercase">URL ou Caminho</label>
+                                                        <input
+                                                            type="text"
+                                                            value={p.image}
+                                                            onChange={(e) => {
+                                                                const newProducts = [...tempConfig.products];
+                                                                newProducts[i].image = e.target.value;
+                                                                setTempConfig({ ...tempConfig, products: newProducts });
+                                                            }}
+                                                            className="border p-2 rounded-lg w-full text-xs"
+                                                        />
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
                                 </div>
                             </div>
 
@@ -517,12 +528,19 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                                     <div className="bg-gray-50 p-4 rounded-xl space-y-4 mt-2">
                                         <div className="flex flex-col gap-2">
                                             <label className="text-xs font-bold text-gray-500 uppercase">Escolher Foto de Fundo</label>
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={(e) => handleFileUpload(e, 'cta.image')}
-                                                className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-navy-blue file:text-white hover:file:bg-navy-light cursor-pointer"
-                                            />
+                                            <div className="flex items-center gap-4">
+                                                {tempConfig.cta.image && (
+                                                    <div className="w-20 h-20 rounded-lg overflow-hidden border bg-gray-200">
+                                                        <img src={tempConfig.cta.image} alt="Thumbnail" className="w-full h-full object-cover" />
+                                                    </div>
+                                                )}
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={(e) => handleFileUpload(e, 'cta.image')}
+                                                    className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-navy-blue file:text-white hover:file:bg-navy-light cursor-pointer"
+                                                />
+                                            </div>
                                         </div>
                                         <div className="flex flex-col gap-2">
                                             <label className="text-xs font-bold text-gray-500 uppercase">Ou URL da Imagem</label>
