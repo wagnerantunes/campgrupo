@@ -150,10 +150,15 @@ const initDb = async () => {
       )
     `);
 
-        // SECURITY: Remove default 'admin' user if it exists
-        await query('DELETE FROM admin_users WHERE username = $1', ['admin']);
+        // Ensure at least one admin exists if table is empty
+        const userCheck = await query('SELECT count(*) FROM admin_users');
+        if (parseInt(userCheck.rows[0].count) === 0) {
+            const hashedPass = await bcrypt.hash('camp2024', 10);
+            await query('INSERT INTO admin_users (username, password_hash) VALUES ($1, $2)', ['admin', hashedPass]);
+            console.log('Default admin user created');
+        }
         
-        console.log('Database initialized (restricted access)');
+        console.log('Database initialized');
     } catch (err) {
         console.error('Error initializing database:', err);
     }
