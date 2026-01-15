@@ -370,7 +370,7 @@ app.get('/api/media', authenticateToken, (req, res) => {
 
 app.delete('/api/media/:filename', authenticateToken, (req, res) => {
     const filename = req.params.filename;
-    const filePath = path.join(__dirname, 'uploads', filename);
+    const filePath = path.join(ROOT_DIR, 'uploads', filename);
     
     // Security: prevent path traversal
     if (filename.includes('..') || filename.includes('/')) {
@@ -379,8 +379,10 @@ app.delete('/api/media/:filename', authenticateToken, (req, res) => {
 
     fs.unlink(filePath, (err) => {
         if (err) {
+            console.error('Delete error:', err);
             return res.status(500).json({ error: 'Erro ao deletar arquivo' });
         }
+        console.log(`✅ Deleted: ${filename}`);
         res.json({ success: true });
     });
 });

@@ -25,6 +25,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
         }
     }, [activeTab]);
 
+    // Sync with parent config whenever it changes (e.g., after save)
+    useEffect(() => {
+        setTempConfig(currentConfig);
+    }, [currentConfig]);
+
     const fetchLeads = async () => {
         try {
             const response = await fetch(`${API_URL}/leads`, {
