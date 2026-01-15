@@ -56,10 +56,10 @@ const Products: React.FC<ProductsProps> = ({ config }) => {
                     </li>
                   ))}
                 </ul>
-                <button className="mt-4 w-full bg-navy-blue text-white py-3 rounded-lg font-bold hover:bg-navy-light transition-all flex items-center justify-center gap-2">
+                <a href="#contato" className="mt-4 w-full bg-navy-blue text-white py-3 rounded-lg font-bold hover:bg-navy-light transition-all flex items-center justify-center gap-2">
                   <span className="material-symbols-outlined text-lg">description</span>
                   Orçamento Grátis
-                </button>
+                </a>
               </div>
             </div>
           ))}

@@ -557,6 +557,82 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                                 </div>
                             </div>
 
+                            {/* Supplies Section */}
+                            <div>
+                                <h2 className="text-lg font-bold text-navy-blue mb-4 uppercase tracking-wider border-b pb-2">Materiais Básicos (Suprimentos)</h2>
+                                <div className="space-y-6">
+                                    {(tempConfig.supplies || []).map((item: any, i: number) => (
+                                        <div key={i} className="bg-gray-50 p-6 rounded-2xl border border-gray-100 flex flex-col gap-4">
+                                            <div className="flex justify-between items-center">
+                                                <h3 className="font-bold text-navy-blue uppercase text-xs tracking-widest">Material {i + 1}</h3>
+                                            </div>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div className="flex flex-col gap-2">
+                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Nome do Material</label>
+                                                    <input
+                                                        type="text"
+                                                        value={item.name}
+                                                        onChange={(e) => {
+                                                            const newSupplies = [...tempConfig.supplies];
+                                                            newSupplies[i].name = e.target.value;
+                                                            setTempConfig({ ...tempConfig, supplies: newSupplies });
+                                                        }}
+                                                        className="border p-3 rounded-lg w-full font-bold"
+                                                    />
+                                                </div>
+                                                <div className="flex flex-col gap-2">
+                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Descrição Curta</label>
+                                                    <input
+                                                        type="text"
+                                                        value={item.desc}
+                                                        onChange={(e) => {
+                                                            const newSupplies = [...tempConfig.supplies];
+                                                            newSupplies[i].desc = e.target.value;
+                                                            setTempConfig({ ...tempConfig, supplies: newSupplies });
+                                                        }}
+                                                        className="border p-3 rounded-lg w-full text-sm"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                                                <div className="flex items-center gap-3">
+                                                    {item.image && (
+                                                        <div className="w-10 h-10 rounded border overflow-hidden bg-gray-200 shrink-0">
+                                                            <img src={item.image} alt="Mini" className="w-full h-full object-cover" />
+                                                        </div>
+                                                    )}
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        onChange={(e) => {
+                                                            const file = e.target.files?.[0];
+                                                            if (file) {
+                                                                const path = `supplies.${i}.image`;
+                                                                handleFileUpload(e, path);
+                                                            }
+                                                        }}
+                                                        className="text-[10px] file:mr-2 file:py-1 file:px-2 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:bg-primary file:text-navy-blue cursor-pointer"
+                                                    />
+                                                </div>
+                                                <div className="flex flex-col gap-1">
+                                                    <label className="text-[10px] font-bold text-gray-500 uppercase">URL ou Caminho</label>
+                                                    <input
+                                                        type="text"
+                                                        value={item.image}
+                                                        onChange={(e) => {
+                                                            const newSupplies = [...tempConfig.supplies];
+                                                            newSupplies[i].image = e.target.value;
+                                                            setTempConfig({ ...tempConfig, supplies: newSupplies });
+                                                        }}
+                                                        className="border p-2 rounded-lg w-full text-xs"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
                             {/* CTA Section */}
                             <div>
                                 <h2 className="text-lg font-bold text-navy-blue mb-4 uppercase tracking-wider border-b pb-2">Banner de Impacto Final (CTA)</h2>

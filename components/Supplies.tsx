@@ -39,10 +39,10 @@ const Supplies: React.FC<SuppliesProps> = ({ config }) => {
                   {item.desc}
                 </p>
                 <div className="flex items-center justify-between border-t border-gray-50 pt-6">
-                  <button className="text-navy-blue text-sm font-black uppercase tracking-wider hover:text-primary transition-all flex items-center gap-2 group/btn">
+                  <a href="#contato" className="text-navy-blue text-sm font-black uppercase tracking-wider hover:text-primary transition-all flex items-center gap-2 group/btn">
                     Consultar Preço 
                     <span className="material-symbols-outlined text-base transform group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
-                  </button>
+                  </a>
                 </div>
               </div>
             </div>
