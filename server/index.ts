@@ -67,6 +67,7 @@ const allowedOrigins = [
 ];
 
 app.use(helmet({
+    contentSecurityPolicy: false, // Usaremos o meta tag no index.html e headers do Nginx para controle granular
     crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 
