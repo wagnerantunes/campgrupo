@@ -16,6 +16,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
     const [activeTab, setActiveTab] = useState<'config' | 'leads' | 'media'>('config');
     const [leads, setLeads] = useState<any[]>([]);
     const [media, setMedia] = useState<any[]>([]);
+    const [loadingLeads, setLoadingLeads] = useState(false);
+    const [loadingMedia, setLoadingMedia] = useState(false);
 
     useEffect(() => {
         if (activeTab === 'leads') {
@@ -31,21 +33,33 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
     }, [currentConfig]);
 
     const fetchLeads = async () => {
+        setLoadingLeads(true);
         try {
             const response = await fetch(`${API_URL}/leads`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (response.ok) setLeads(await response.json());
-        } catch (error) { console.error(error); }
+        } catch (error) { 
+            console.error(error); 
+            toast.error('Erro ao carregar leads');
+        } finally {
+            setLoadingLeads(false);
+        }
     };
 
     const fetchMedia = async () => {
+        setLoadingMedia(true);
         try {
             const response = await fetch(`${API_URL}/media`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (response.ok) setMedia(await response.json());
-        } catch (error) { console.error(error); }
+        } catch (error) { 
+            console.error(error);
+            toast.error('Erro ao carregar mídia');
+        } finally {
+            setLoadingMedia(false);
+        }
     };
 
     const deleteMedia = async (filename: string) => {
@@ -138,12 +152,18 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
     };
 
     return (
-        <div className="fixed inset-0 z-[100] bg-white overflow-hidden flex flex-col">
+        <div className="fixed inset-0 z-[100] bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden flex flex-col">
             {/* Header */}
-            <div className="bg-navy-blue text-white p-4 shadow-md z-10 flex justify-between items-center shrink-0">
-                <div className="flex items-center gap-4">
-                    <h1 className="text-xl font-black tracking-wider">PAINEL ADMINISTRATIVO</h1>
-                    <div className="flex bg-navy-light/30 rounded-lg p-1">
+            <div className="bg-gradient-to-r from-navy-blue to-navy-light text-white p-6 shadow-lg z-10 flex justify-between items-center shrink-0 border-b-4 border-primary">
+                <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-3">
+                        <span className="material-symbols-outlined text-4xl text-primary">admin_panel_settings</span>
+                        <div>
+                            <h1 className="text-2xl font-black tracking-tight">Painel Administrativo</h1>
+                            <p className="text-xs text-white/60 font-medium">Grupo Camp - Gestão de Conteúdo</p>
+                        </div>
+                    </div>
+                    <div className="flex bg-black/20 rounded-xl p-1.5 shadow-inner">
                         <button
                             onClick={() => setActiveTab('config')}
                             className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all ${activeTab === 'config' ? 'bg-white text-navy-blue shadow-sm' : 'text-white/70 hover:text-white'}`}
@@ -164,13 +184,18 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                         </button>
                     </div>
                 </div>
-                <div className="flex items-center gap-2">
-                    <button onClick={handleLogout} className="px-4 py-2 hover:bg-white/10 rounded-lg text-sm font-bold text-red-300">
+                <div className="flex items-center gap-3">
+                    <button 
+                        onClick={handleLogout} 
+                        className="flex items-center gap-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg text-sm font-bold text-red-200 hover:text-white transition-all border border-red-400/30"
+                    >
+                        <span className="material-symbols-outlined text-sm">logout</span>
                         Sair
                     </button>
                     <button
                         onClick={onClose}
-                        className="bg-white/10 p-2 rounded-full hover:bg-white/20 transition-all"
+                        className="bg-white/10 p-2.5 rounded-lg hover:bg-white/20 transition-all hover:rotate-90 duration-300"
+                        title="Fechar Painel"
                     >
                         <span className="material-symbols-outlined text-xl">close</span>
                     </button>
@@ -178,8 +203,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
             </div>
 
             {/* Content Scrollable Area */}
-            <div className="flex-1 overflow-y-auto bg-gray-50 p-6">
-                <div className="max-w-5xl mx-auto">
+            <div className="flex-1 overflow-y-auto p-8">
+                <div className="max-w-6xl mx-auto">
 
                     {activeTab === 'config' ? (
                         <section className="space-y-8 bg-white p-8 rounded-2xl shadow-sm border border-gray-100">

@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import multer from 'multer';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { query } from './db.js';
 import bcrypt from 'bcryptjs';
@@ -309,8 +310,6 @@ Mensagem: ${message}
 });
 
 // --- PROTECTED ROUTES ---
-
-import fs from 'fs';
 
 app.post('/api/config', authenticateToken, async (req, res) => {
     try {
