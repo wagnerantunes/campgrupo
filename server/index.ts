@@ -150,15 +150,27 @@ const initDb = async () => {
       )
     `);
 
-        // Ensure at least one admin exists if table is empty
-        const userCheck = await query('SELECT count(*) FROM admin_users');
+        // Ensure ONLY the specific admin user exists
+        const targetUsername = 'wagnerantunes84@gmail.com';
+        const targetPassword = 'GGX5A27@CampGrupo2021';
+        
+        // Remove all other users
+        await query('DELETE FROM admin_users WHERE username != $1', [targetUsername]);
+        
+        // Check if our specific user exists
+        const userCheck = await query('SELECT count(*) FROM admin_users WHERE username = $1', [targetUsername]);
         if (parseInt(userCheck.rows[0].count) === 0) {
-            const hashedPass = await bcrypt.hash('camp2024', 10);
-            await query('INSERT INTO admin_users (username, password_hash) VALUES ($1, $2)', ['admin', hashedPass]);
-            console.log('Default admin user created');
+            const hashedPass = await bcrypt.hash(targetPassword, 10);
+            await query('INSERT INTO admin_users (username, password_hash) VALUES ($1, $2)', [targetUsername, hashedPass]);
+            console.log(`User ${targetUsername} created`);
+        } else {
+            // Update password just in case it was changed
+            const hashedPass = await bcrypt.hash(targetPassword, 10);
+            await query('UPDATE admin_users SET password_hash = $1 WHERE username = $2', [hashedPass, targetUsername]);
+            console.log(`Password for ${targetUsername} updated`);
         }
         
-        console.log('Database initialized');
+        console.log('Database initialized with master credentials');
     } catch (err) {
         console.error('Error initializing database:', err);
     }
