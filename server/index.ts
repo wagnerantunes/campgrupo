@@ -256,13 +256,17 @@ Mensagem: ${message}
 app.post('/api/config', authenticateToken, async (req, res) => {
     try {
         const configData = req.body;
-        await query(`
+        console.log('--- Updating Site Config ---');
+        const queryText = `
       INSERT INTO site_config (key, data)
       VALUES ($1, $2)
       ON CONFLICT (key) DO UPDATE SET data = $2, updated_at = CURRENT_TIMESTAMP
-    `, ['current_config', configData]);
+    `;
+        await query(queryText, ['current_config', configData]);
+        console.log('Config updated successfully');
         res.json({ success: true });
     } catch (err) {
+        console.error('DATABASE ERROR on /api/config:', err);
         res.status(500).json({ error: (err as Error).message });
     }
 });
