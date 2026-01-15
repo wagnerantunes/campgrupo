@@ -14,6 +14,52 @@ import rateLimit from 'express-rate-limit';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// --- SECURITY MIDDLEWARE & SANITIZATION ---
+
+/**
+ * Escapes common HTML characters to prevent XSS.
+ * This is a simple but effective manual sanitization.
+ */
+const sanitizeString = (str: string): string => {
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;')
+        .replace(/\//g, '&#x2F;');
+};
+
+/**
+ * Recursively sanitizes all strings in an object or array.
+ */
+const sanitizeDeep = (obj: any): any => {
+    if (typeof obj !== 'object' || obj === null) return obj;
+    
+    if (Array.isArray(obj)) {
+        return obj.map(item => sanitizeDeep(item));
+    }
+
+    const newObj: any = {};
+    for (const key in obj) {
+        if (typeof obj[key] === 'string') {
+            newObj[key] = sanitizeString(obj[key]);
+        } else if (typeof obj[key] === 'object') {
+            newObj[key] = sanitizeDeep(obj[key]);
+        } else {
+            newObj[key] = obj[key];
+        }
+    }
+    return newObj;
+};
+
+const xssSanitizer = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    if (req.body && typeof req.body === 'object') {
+        req.body = sanitizeDeep(req.body);
+    }
+    next();
+};
+
 dotenv.config();
 
 const app = express();
@@ -58,6 +104,7 @@ app.use(cors({
 }));
 
 app.use(express.json({ limit: '1mb' })); // Proteção contra payloads gigantes
+app.use(xssSanitizer); // Sanitização profunda de todos os inputs
 app.use(generalLimiter);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
