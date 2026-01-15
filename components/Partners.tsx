@@ -10,38 +10,36 @@ const Partners: React.FC<PartnersProps> = ({ config }) => {
 
   return (
     <section 
-      className="py-20 bg-white border-b border-gray-100"
+      className="py-24 bg-slate-50 border-y border-gray-100"
       aria-labelledby="partners-title"
     >
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <p className="text-[11px] uppercase tracking-[0.4em] text-gray-400 font-bold mb-3">Parceiros de Confiança</p>
-          <h2 id="partners-title" className="text-3xl font-black text-navy-blue">
+          <p className="text-[11px] uppercase tracking-[0.4em] text-primary font-black mb-3">Parceiros de Confiança</p>
+          <h2 id="partners-title" className="text-3xl md:text-4xl font-black text-navy-blue">
             Grandes empresas atendidas pelo Grupo Camp
           </h2>
         </div>
         
-        <div className="flex flex-wrap items-center justify-center gap-x-16 gap-y-12 lg:gap-x-24">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 items-center">
           {partners.map((partner: any, index: number) => (
             <div 
               key={index} 
-              className="flex flex-col items-center gap-3 group"
+              className="group flex flex-col items-center gap-4"
               role="img" 
               aria-label={`Parceiro: ${partner.name}`}
             >
-              <div className="relative flex items-center justify-center transition-all duration-500 transform group-hover:scale-110">
+              <div className="w-full h-32 md:h-40 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center p-6 transition-all duration-500 hover:shadow-xl hover:shadow-primary/10 hover:border-primary/20 transform hover:-translate-y-1">
                 <img 
                   src={partner.logo} 
                   alt={partner.name} 
-                  className="h-14 md:h-20 w-auto object-contain filter grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500"
+                  className="max-w-full max-h-full object-contain transition-all duration-500 group-hover:scale-110"
                   loading="lazy"
                 />
               </div>
-              {partner.name === 'BRZ Empreendimentos' && (
-                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-2 group-hover:text-primary transition-colors">
-                  Empreendimentos
-                </span>
-              )}
+              <span className="text-[10px] font-black text-navy-blue/40 uppercase tracking-widest group-hover:text-navy-blue transition-colors text-center px-2">
+                {partner.name}
+              </span>
             </div>
           ))}
         </div>
