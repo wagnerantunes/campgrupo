@@ -691,6 +691,31 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                             <div>
                                 <h2 className="text-lg font-bold text-navy-blue mb-4 uppercase tracking-wider border-b pb-2">Rodapé & Contato</h2>
                                 <div className="space-y-4">
+                                    {/* Footer Logo */}
+                                    <div className="bg-gray-50 p-4 rounded-xl">
+                                        <label className="text-xs font-bold text-gray-500 uppercase block mb-2">Logo do Rodapé (.webp)</label>
+                                        <div className="flex items-center gap-4">
+                                            {tempConfig.footer?.logo && (
+                                                <div className="w-32 h-20 rounded-lg overflow-hidden border bg-white p-2">
+                                                    <img src={tempConfig.footer.logo} alt="Footer Logo" className="w-full h-full object-contain" />
+                                                </div>
+                                            )}
+                                            <input
+                                                type="file"
+                                                accept="image/webp"
+                                                onChange={(e) => handleFileUpload(e, 'footer.logo')}
+                                                className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-navy-blue file:text-white hover:file:bg-navy-light cursor-pointer"
+                                            />
+                                        </div>
+                                        <input
+                                            type="text"
+                                            value={tempConfig.footer?.logo || ''}
+                                            onChange={(e) => handleUpdate('footer.logo', e.target.value)}
+                                            className="border p-2 rounded-lg w-full text-sm mt-2"
+                                            placeholder="Ou cole o caminho: /logo-footer.webp"
+                                        />
+                                    </div>
+
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div className="flex flex-col gap-2">
                                             <label className="text-xs font-bold text-gray-500 uppercase">WhatsApp (Apenas Números)</label>
@@ -757,6 +782,138 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                                             className="border p-3 rounded-lg w-full"
                                         />
                                     </div>
+                                </div>
+                            </div>
+
+                            {/* ABCP Section */}
+                            <div>
+                                <h2 className="text-lg font-bold text-navy-blue mb-4 uppercase tracking-wider border-b pb-2">ABCP - Certificação</h2>
+                                <div className="space-y-4">
+                                    <div className="bg-gray-50 p-4 rounded-xl">
+                                        <label className="text-xs font-bold text-gray-500 uppercase block mb-2">Logo ABCP (.webp)</label>
+                                        <div className="flex items-center gap-4">
+                                            {tempConfig.abcp?.logo && (
+                                                <div className="w-32 h-20 rounded-lg overflow-hidden border bg-white p-2">
+                                                    <img src={tempConfig.abcp.logo} alt="ABCP Logo" className="w-full h-full object-contain" />
+                                                </div>
+                                            )}
+                                            <input
+                                                type="file"
+                                                accept="image/webp"
+                                                onChange={(e) => handleFileUpload(e, 'abcp.logo')}
+                                                className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-navy-blue file:text-white hover:file:bg-navy-light cursor-pointer"
+                                            />
+                                        </div>
+                                        <input
+                                            type="text"
+                                            value={tempConfig.abcp?.logo || ''}
+                                            onChange={(e) => handleUpdate('abcp.logo', e.target.value)}
+                                            className="border p-2 rounded-lg w-full text-sm mt-2"
+                                            placeholder="/abcp-logo.webp"
+                                        />
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Título</label>
+                                        <input
+                                            type="text"
+                                            value={tempConfig.abcp?.title || ''}
+                                            onChange={(e) => handleUpdate('abcp.title', e.target.value)}
+                                            className="border p-3 rounded-lg w-full"
+                                        />
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Descrição</label>
+                                        <textarea
+                                            value={tempConfig.abcp?.description || ''}
+                                            onChange={(e) => handleUpdate('abcp.description', e.target.value)}
+                                            className="border p-3 rounded-lg w-full"
+                                            rows={3}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Partners Section */}
+                            <div>
+                                <h2 className="text-lg font-bold text-navy-blue mb-4 uppercase tracking-wider border-b pb-2">Parceiros de Confiança</h2>
+                                <div className="space-y-4">
+                                    {tempConfig.partners?.map((partner: any, i: number) => (
+                                        <div key={i} className="bg-gray-50 p-4 rounded-xl border-l-4 border-primary">
+                                            <div className="flex items-center justify-between mb-3">
+                                                <h3 className="font-bold text-navy-blue">Parceiro {i + 1}</h3>
+                                                <button
+                                                    onClick={() => {
+                                                        const newPartners = tempConfig.partners.filter((_: any, idx: number) => idx !== i);
+                                                        setTempConfig({ ...tempConfig, partners: newPartners });
+                                                    }}
+                                                    className="text-red-500 hover:text-red-700 text-xs font-bold"
+                                                >
+                                                    Remover
+                                                </button>
+                                            </div>
+                                            <div className="space-y-3">
+                                                <div className="flex flex-col gap-2">
+                                                    <label className="text-xs font-bold text-gray-500 uppercase">Nome do Parceiro</label>
+                                                    <input
+                                                        type="text"
+                                                        value={partner.name}
+                                                        onChange={(e) => {
+                                                            const newPartners = [...tempConfig.partners];
+                                                            newPartners[i].name = e.target.value;
+                                                            setTempConfig({ ...tempConfig, partners: newPartners });
+                                                        }}
+                                                        className="border p-2 rounded-lg w-full"
+                                                    />
+                                                </div>
+                                                <div className="flex flex-col gap-2">
+                                                    <label className="text-xs font-bold text-gray-500 uppercase">Logo (.webp)</label>
+                                                    <div className="flex items-center gap-3">
+                                                        {partner.logo && (
+                                                            <div className="w-24 h-16 rounded border overflow-hidden bg-white p-1 shrink-0">
+                                                                <img src={partner.logo} alt={partner.name} className="w-full h-full object-contain" />
+                                                            </div>
+                                                        )}
+                                                        <input
+                                                            type="file"
+                                                            accept="image/webp"
+                                                            onChange={(e) => {
+                                                                const file = e.target.files?.[0];
+                                                                if (file) {
+                                                                    const path = `partners.${i}.logo`;
+                                                                    handleFileUpload(e, path);
+                                                                }
+                                                            }}
+                                                            className="text-xs file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-primary file:text-navy-blue cursor-pointer"
+                                                        />
+                                                    </div>
+                                                    <input
+                                                        type="text"
+                                                        value={partner.logo}
+                                                        onChange={(e) => {
+                                                            const newPartners = [...tempConfig.partners];
+                                                            newPartners[i].logo = e.target.value;
+                                                            setTempConfig({ ...tempConfig, partners: newPartners });
+                                                        }}
+                                                        className="border p-2 rounded-lg w-full text-sm"
+                                                        placeholder="/partners/logo.webp"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    <button
+                                        onClick={() => {
+                                            const newPartners = [...(tempConfig.partners || []), {
+                                                id: (tempConfig.partners?.length || 0) + 1,
+                                                name: 'Novo Parceiro',
+                                                logo: '/partners/logo.webp'
+                                            }];
+                                            setTempConfig({ ...tempConfig, partners: newPartners });
+                                        }}
+                                        className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-primary hover:text-primary transition-all font-bold"
+                                    >
+                                        + Adicionar Parceiro
+                                    </button>
                                 </div>
                             </div>
                         </section>

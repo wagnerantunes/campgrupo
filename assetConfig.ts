@@ -75,6 +75,7 @@ export const assetConfig = {
         image: "https://images.unsplash.com/photo-1541888946425-d81bb19480c5?auto=format&fit=crop&q=80&w=2000"
     },
     footer: {
+        logo: "/logo-footer.webp",
         address: "Estrada Municipal Mor, 377\nMonte Mor - SP",
         phone: "19 3909-6852",
         whatsapp: "551939096852",
@@ -90,6 +91,38 @@ export const assetConfig = {
         regions: "Campinas • Sumaré • Hortolândia • Valinhos • Paulínia • Vinhedo • Monte Mor • Indaiatuba • Concreto Usinado Preço • Fábrica de Blocos • Piso Intertravado Calçada • Materiais de Construção Atacado.",
         copyright: "© {year} Grupo Camp. Indústria e Comércio de Blocos e Pisos."
     },
+    abcp: {
+        logo: "/abcp-logo.webp",
+        title: "Compromisso com a Qualidade Técnica",
+        description: "Nossos processos seguem rigorosamente os padrões da Associação Brasileira de Cimento Portland. Garantimos que cada material entregue atenda aos critérios de segurança e durabilidade exigidos pelas normas técnicas."
+    },
+    partners: [
+        {
+            id: 1,
+            name: "MRV",
+            logo: "/partners/mrv-logo.webp"
+        },
+        {
+            id: 2,
+            name: "Direcional",
+            logo: "/partners/direcional-logo.webp"
+        },
+        {
+            id: 3,
+            name: "Equipav",
+            logo: "/partners/equipav-logo.webp"
+        },
+        {
+            id: 4,
+            name: "Grupo Estrutural",
+            logo: "/partners/estrutural-logo.webp"
+        },
+        {
+            id: 5,
+            name: "BRZ Empreendimentos",
+            logo: "/partners/brz-logo.webp"
+        }
+    ],
     seo: {
         title: "Grupo Camp | Concreto Usinado, Blocos e Pisos em Campinas",
         description: "Líder no fornecimento de Concreto Usinado, Blocos e Pisos Intertravados em Campinas e região. Qualidade e entrega rápida para sua obra.",
