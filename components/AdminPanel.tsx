@@ -211,24 +211,50 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                             {/* Logo Section */}
                             <div>
                                 <h2 className="text-lg font-bold text-navy-blue mb-4 uppercase tracking-wider border-b pb-2">Identidade (Logotipo)</h2>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div className="flex flex-col gap-2">
-                                        <label className="text-xs font-bold text-gray-500 uppercase">Texto do Logo</label>
+                                <div className="space-y-4">
+                                    <div className="bg-gray-50 p-4 rounded-xl">
+                                        <label className="text-xs font-bold text-gray-500 uppercase block mb-2">Imagem do Logo (Substitui texto/ícone)</label>
+                                        <div className="flex items-center gap-4">
+                                            {tempConfig.logo.logoUrl && (
+                                                <div className="w-32 h-20 rounded-lg overflow-hidden border bg-white p-2">
+                                                    <img src={tempConfig.logo.logoUrl} alt="Logo Preview" className="w-full h-full object-contain" />
+                                                </div>
+                                            )}
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={(e) => handleFileUpload(e, 'logo.logoUrl')}
+                                                className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-navy-blue file:text-white hover:file:bg-navy-light cursor-pointer"
+                                            />
+                                        </div>
                                         <input
                                             type="text"
-                                            value={tempConfig.logo.text}
-                                            onChange={(e) => handleUpdate('logo.text', e.target.value)}
-                                            className="border p-3 rounded-lg w-full"
+                                            value={tempConfig.logo.logoUrl || ''}
+                                            onChange={(e) => handleUpdate('logo.logoUrl', e.target.value)}
+                                            className="border p-2 rounded-lg w-full text-sm mt-3"
+                                            placeholder="Ou cole a URL da imagem aqui"
                                         />
                                     </div>
-                                    <div className="flex flex-col gap-2">
-                                        <label className="text-xs font-bold text-gray-500 uppercase">Ícone (Material Icon Name)</label>
-                                        <input
-                                            type="text"
-                                            value={tempConfig.logo.icon}
-                                            onChange={(e) => handleUpdate('logo.icon', e.target.value)}
-                                            className="border p-3 rounded-lg w-full"
-                                        />
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Texto do Logo (Fallback)</label>
+                                            <input
+                                                type="text"
+                                                value={tempConfig.logo.text}
+                                                onChange={(e) => handleUpdate('logo.text', e.target.value)}
+                                                className="border p-3 rounded-lg w-full"
+                                            />
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Ícone (Fallback)</label>
+                                            <input
+                                                type="text"
+                                                value={tempConfig.logo.icon}
+                                                onChange={(e) => handleUpdate('logo.icon', e.target.value)}
+                                                className="border p-3 rounded-lg w-full"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>

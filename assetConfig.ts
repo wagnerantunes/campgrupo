@@ -2,7 +2,8 @@ export const assetConfig = {
     logo: {
         icon: "foundation",
         text: "GRUPO CAMP",
-        subtext: "Indústria"
+        subtext: "Indústria",
+        logoUrl: ""
     },
     header: {
         navLinks: [

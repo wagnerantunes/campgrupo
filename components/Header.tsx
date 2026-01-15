@@ -13,13 +13,23 @@ const Header: React.FC<HeaderProps> = ({ config }) => {
     <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-background-dark/95 backdrop-blur-md border-b border-white/5 py-4">
       <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
         <a href="/" className="flex items-center gap-3 group">
-          <div className="bg-primary text-navy-blue p-1.5 rounded-lg group-hover:scale-110 transition-transform">
-            <span className="material-symbols-outlined text-2xl fill-1">{logo.icon}</span>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xl font-black tracking-tight text-white leading-none">{logo.text}</span>
-            <span className="text-[9px] uppercase tracking-[0.2em] text-primary font-black mt-0.5">{logo.subtext}</span>
-          </div>
+          {logo.logoUrl ? (
+            <img 
+              src={logo.logoUrl} 
+              alt={logo.text} 
+              className="h-10 md:h-12 w-auto object-contain transition-transform group-hover:scale-105" 
+            />
+          ) : (
+            <>
+              <div className="bg-primary text-navy-blue p-1.5 rounded-lg group-hover:scale-110 transition-transform">
+                <span className="material-symbols-outlined text-2xl fill-1">{logo.icon}</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xl font-black tracking-tight text-white leading-none">{logo.text}</span>
+                <span className="text-[9px] uppercase tracking-[0.2em] text-primary font-black mt-0.5">{logo.subtext}</span>
+              </div>
+            </>
+          )}
         </a>
 
         <nav className="hidden lg:flex items-center gap-8">
