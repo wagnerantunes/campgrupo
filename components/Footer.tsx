@@ -14,15 +14,21 @@ const Footer: React.FC<FooterProps> = ({ config }) => {
     <footer className="bg-background-dark text-white pt-24 pb-12" id="orcamentos">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-4 gap-16 mb-20">
         <div className="col-span-1 lg:col-span-2">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="bg-primary text-navy-blue p-2 rounded-lg">
-              <span className="material-symbols-outlined text-3xl fill-1">{config.logo.icon}</span>
+          {footer.logo ? (
+            <div className="mb-8">
+              <img src={footer.logo} alt={config.logo.text} className="h-16 w-auto object-contain" />
             </div>
-            <div className="flex flex-col">
-              <span className="text-2xl font-black tracking-tight text-white">{config.logo.text}</span>
-              <span className="text-[10px] uppercase tracking-[0.2em] text-primary font-black">{config.logo.subtext}</span>
+          ) : (
+            <div className="flex items-center gap-3 mb-8">
+              <div className="bg-primary text-navy-blue p-2 rounded-lg">
+                <span className="material-symbols-outlined text-3xl fill-1">{config.logo.icon}</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-2xl font-black tracking-tight text-white">{config.logo.text}</span>
+                <span className="text-[10px] uppercase tracking-[0.2em] text-primary font-black">{config.logo.subtext}</span>
+              </div>
             </div>
-          </div>
+          )}
           <p className="text-blue-100/60 max-w-md mb-8 leading-relaxed font-medium">
             {config.about.description1}
           </p>

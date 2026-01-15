@@ -21,11 +21,11 @@ const Home: React.FC<HomeProps> = ({ config }) => {
         <Hero config={config.hero} />
         <LocationsBar />
         <AboutUs config={config.about} />
-        <Partners />
+        <Partners config={config} />
         <Products config={config.products} />
         <Supplies config={config.supplies} />
         <EfficiencyCTA config={config.cta} />
-        <ABCPBadge />
+        <ABCPBadge config={config} />
         <ServiceAreasCTA />
         <Testimonials />
         <ContactSection />
