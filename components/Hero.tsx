@@ -6,6 +6,9 @@ import { useNavigate } from 'react-router-dom';
 
 interface HeroProps {
   config: {
+    title: string;
+    subtitle: string;
+    ctaText: string;
     image: string;
   };
 }
@@ -29,34 +32,34 @@ const Hero: React.FC<HeroProps> = ({ config }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.phone) {
-        toast.error('Por favor, preencha nome e WhatsApp.');
-        return;
+      toast.error('Por favor, preencha nome e WhatsApp.');
+      return;
     }
 
     setLoading(true);
     const toastId = toast.loading('Enviando solicitação...');
 
     try {
-        const response = await fetch(`${API_URL}/leads`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        });
+      const response = await fetch(`${API_URL}/leads`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
 
-        if (response.ok) {
-            toast.success('Solicitação recebida!', { id: toastId });
-            setFormData({ name: '', phone: '', city: '' });
-            navigate('/obrigado');
-        } else {
-            toast.error('Erro ao enviar. Tente novamente.', { id: toastId });
-        }
+      if (response.ok) {
+        toast.success('Solicitação recebida!', { id: toastId });
+        setFormData({ name: '', phone: '', city: '' });
+        navigate('/obrigado');
+      } else {
+        toast.error('Erro ao enviar. Tente novamente.', { id: toastId });
+      }
     } catch (error) {
-        console.error(error);
-        toast.error('Erro de conexão.', { id: toastId });
+      console.error(error);
+      toast.error('Erro de conexão.', { id: toastId });
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -80,13 +83,13 @@ const Hero: React.FC<HeroProps> = ({ config }) => {
             Qualidade ABCP Direto da Fábrica
           </div>
 
-          <h1 className="text-5xl lg:text-7xl font-extrabold text-white leading-[1.1] tracking-tight">
-            Força e precisão para sua <span className="text-primary italic">obra pesada.</span>
+          <h1 className="text-5xl lg:text-7xl font-extrabold text-white leading-[1.1] tracking-tight whitespace-pre-line">
+            {config.title || "Força e precisão para sua obra pesada."}
           </h1>
 
           <div className="flex flex-col gap-4">
             <p className="text-xl text-blue-100/80 max-w-xl font-medium">
-              Especialistas em soluções de alto desempenho:
+              {config.subtitle || "Especialistas em blocos de concreto e pisos intertravados de alta performance."}
             </p>
             <div className="flex flex-col gap-3">
               {mainProducts.map((p, i) => (
@@ -126,51 +129,51 @@ const Hero: React.FC<HeroProps> = ({ config }) => {
             <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-black text-navy-blue uppercase tracking-wider ml-1">Nome</label>
-                <input 
-                    type="text" 
-                    placeholder="Seu nome" 
-                    value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-navy-blue focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" 
-                    required
+                <input
+                  type="text"
+                  placeholder="Seu nome"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-navy-blue focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                  required
                 />
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-black text-navy-blue uppercase tracking-wider ml-1">WhatsApp</label>
-                <input 
-                    type="tel" 
-                    placeholder="(19) 99999-9999" 
-                    value={formData.phone}
-                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-navy-blue focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" 
-                    required
+                <input
+                  type="tel"
+                  placeholder="(19) 99999-9999"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-navy-blue focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                  required
                 />
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-black text-navy-blue uppercase tracking-wider ml-1">Cidade</label>
-                <input 
-                    type="text" 
-                    placeholder="Cidade da Obra" 
-                    value={formData.city}
-                    onChange={(e) => setFormData({...formData, city: e.target.value})}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-navy-blue focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" 
+                <input
+                  type="text"
+                  placeholder="Cidade da Obra"
+                  value={formData.city}
+                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-navy-blue focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
                 />
               </div>
 
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 disabled={loading}
                 className="mt-4 w-full bg-navy-blue text-white py-4 rounded-xl font-black text-lg hover:bg-navy-light active:scale-[0.98] transition-all shadow-xl shadow-navy-blue/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {loading ? (
-                    <span className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                  <span className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
                 ) : (
-                    <>
-                        <span className="material-symbols-outlined">send</span>
-                        Enviar Agora
-                    </>
+                  <>
+                    <span className="material-symbols-outlined">send</span>
+                    {config.ctaText || "Solicitar Orçamento"}
+                  </>
                 )}
               </button>
 

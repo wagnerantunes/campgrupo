@@ -3,6 +3,12 @@ import React from 'react';
 
 interface AboutUsProps {
   config: {
+    sectionTitle: string;
+    title: string;
+    description1: string;
+    description2: string;
+    badgeTitle: string;
+    badgeSubtitle: string;
     image: string;
   };
 }
@@ -26,17 +32,19 @@ const AboutUs: React.FC<AboutUsProps> = ({ config }) => {
             <div className="flex flex-col gap-4">
               <span className="text-navy-blue font-black uppercase tracking-widest text-sm flex items-center gap-2">
                 <span className="w-8 h-[2px] bg-primary"></span>
-                Sobre o Grupo Camp
+                {config.sectionTitle || "Sobre o Grupo Camp"}
               </span>
-              <h2 className="text-4xl lg:text-5xl font-extrabold text-navy-blue leading-tight">Excelência em cada etapa</h2>
+              <h2 className="text-4xl lg:text-5xl font-extrabold text-navy-blue leading-tight">
+                {config.title || "Excelência em cada etapa"}
+              </h2>
             </div>
 
             <div className="flex flex-col gap-4 text-gray-700 text-lg leading-relaxed">
               <p>
-                No Grupo Camp, somos especialistas na fabricação de blocos de concreto e pisos intertravados com alto padrão de qualidade. Nossos produtos são paletizados e conferidos para garantir segurança e agilidade no canteiro de obras.
+                {config.description1 || "No Grupo Camp, somos especialistas na fabricação de blocos de concreto e pisos intertravados com alto padrão de qualidade."}
               </p>
               <p className="text-gray-600">
-                Localizados estrategicamente em Monte Mor, atendemos toda a região de Campinas com frota própria e suporte técnico especializado, seja para pequenas reformas ou grandes empreendimentos imobiliários.
+                {config.description2 || "Atendemos toda a região de Campinas com frota própria e suporte técnico especializado."}
               </p>
             </div>
 
@@ -56,15 +64,19 @@ const AboutUs: React.FC<AboutUsProps> = ({ config }) => {
             <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
               <img
                 src={industrialImage}
-                alt="Estrutura Industrial do Grupo Camp em Monte Mor"
+                alt="Estrutura Industrial do Grupo Camp"
                 className="h-[600px] w-full object-cover"
                 loading="lazy"
               />
             </div>
             <div className="absolute -bottom-10 -left-10 bg-navy-blue text-white p-8 rounded-2xl shadow-xl z-20">
               <div className="flex flex-col gap-1">
-                <span className="text-4xl font-black text-primary">Sede Monte Mor</span>
-                <p className="text-sm font-bold uppercase tracking-widest opacity-70">Estrutura Industrial Completa</p>
+                <span className="text-4xl font-black text-primary">
+                  {config.badgeTitle || "Sede Monte Mor"}
+                </span>
+                <p className="text-sm font-bold uppercase tracking-widest opacity-70">
+                  {config.badgeSubtitle || "Estrutura Industrial Completa"}
+                </p>
               </div>
             </div>
           </div>

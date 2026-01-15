@@ -3,6 +3,8 @@ import React from 'react';
 
 interface EfficiencyCTAProps {
   config: {
+    title: string;
+    subtitle: string;
     image: string;
   };
 }
@@ -31,8 +33,13 @@ const EfficiencyCTA: React.FC<EfficiencyCTAProps> = ({ config }) => {
 
           <div className="py-4">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight tracking-tight">
-              Grupo Camp une qualidade, custo-benefício e eficiência para a sua obra!
+              {config.title || "Grupo Camp une qualidade, custo-benefício e eficiência para a sua obra!"}
             </h2>
+            {config.subtitle && (
+              <p className="text-blue-100 mt-4 text-lg font-medium opacity-80 italic">
+                {config.subtitle}
+              </p>
+            )}
           </div>
         </div>
       </div>

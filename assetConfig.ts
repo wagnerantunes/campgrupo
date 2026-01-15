@@ -5,17 +5,26 @@ export const assetConfig = {
         subtext: "Indústria"
     },
     hero: {
-        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuClGt90Xwycrmig3tIx-GSyrUDzviZ5CMs637_tD-0RFNMe_ABTe741p7BUo6bAOi-GgRZdm8IhnPHmyFHX7oH7Bfy-9lWQgLaKi2-Jx0ezv6xN_Ev1dE0-56ST2-AE5M3ehB-eloow_e8TNueeQ4RFc4VpQ9PXbKXfZnVftqCk0CXcWqNSFye5T6moxFGCPsBVR8vX9pVcurosHdrJ0ESKN-nUOVbNVVKYrLzOQAS29TaneO7MKJIo4fvKrezRiG6aEshJfEqIBv3l",
+        title: "Sua obra começa com quem entende de concreto.",
+        subtitle: "Blocos de concreto e pisos intertravados de alta resistência com entrega rápida em toda a região de Campinas.",
+        ctaText: "SOLICITAR ORÇAMENTO",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuClGt90Xwycrmig3tIx-GSyrUDZviZ5CMs637_tD-0RFNMe_ABTe741p7BUo6bAOi-GgRZdm8IhnPHmyFHX7oH7Bfy-9lWQgLaKi2-Jx0ezv6xN_Ev1dE0-56ST2-AE5M3ehB-eloow_e8TNueeQ4RFc4VpQ9PXbKXfZnVftqCk0CXcWqNSFye5T6moxFGCPsBVR8vX9pVcurosHdrJ0ESKN-nUOVbNVVKYrLzOQAS29TaneO7MKJIo4fvKrezRiG6aEshJfEqIBv3l",
     },
     about: {
-        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAzU0Pd8zaJyZ3r1pwLW_duFO2GU8Wa3QRCjIZuGuRz3u08sjPhjay9Ux-FR9XFVyq4NtUcDf90y5v-c9r7FS4ChfQ_83A1AScnyzk69YVUx1yYYWSUNJA8x6HT0ouhqIewy6VHB8xPbHAhQMB7eOLQx732F1TqVD9rZ_xYfQgG0kvsgAeH2lIiOQQ7GrKAuiEE5kr7cleyl_mA5UDQjrOjbjasJ2hBAywyPc8K1t1ctn5IJaM2y7FoOUuEM25A5qaPHlYMOkvG18jF"
+        sectionTitle: "Sobre o Grupo Camp",
+        title: "Excelência em cada etapa",
+        description1: "No Grupo Camp, somos especialistas na fabricação de blocos de concreto e pisos intertravados com alto padrão de qualidade. Nossos produtos são paletizados e conferidos para garantir segurança e agilidade no canteiro de obras.",
+        description2: "Localizados estrategicamente em Monte Mor, atendemos toda a região de Campinas com frota própria e suporte técnico especializado, seja para pequenas reformas ou grandes empreendimentos imobiliários.",
+        badgeTitle: "Sede Monte Mor",
+        badgeSubtitle: "Estrutura Industrial Completa",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAzU0Pd8zaJyZ3r1pwLW_duFO2GU8Wa3QRCnIZuGuRz3u08sjPhjay9Ux-FR9XFVyq4NtUcDf90y5v-c9r7FS4ChfQ_83A1AScnyzk69YVUx1yYYWSUNJA8x6HT0ouhqIewy6VHB8xPbHAhQMB7eOLQx732F1TqVD9rZ_xYfQgG0kvsgAeH2lIiOQQ7GrKAuiEE5kr7cleyl_mA5UDQjrOjbjasJ2hBAywyPc8K1t1ctn5IJaM2y7FoOUuEM25A5qaPHlYMOkvG18jF"
     },
     products: [
         {
             id: 1,
             title: "Concreto Usinado",
             description: "Controle de laboratório rigoroso, ideal para lajes e pilares com dosagem exata.",
-            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAAQABhiunxHfWYh3ocRSZmE0CGV78dtyXeAATZu5U-KuIKfhucaqrBncLgGp6sZcBtDugDFvLeMeAIB0sw1El2f6fg1X18hQBWqxl6kVvxRJu_Q0hEj8Kfozpv0XwaGU2qYrWgnrlL6fuzIenUODc2SAJQ-eT8ifX5U3n1Sh1PTAXap4VlKbd0oBp-RRR1bpFx9jrhuLHul6v5bywju4IqbyRsBDyVhGGDlIUeh6QjoGDPEqsLCjGjLzifqVi4TUuHTNNLVXMKif0Q",
+            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAAQABhiunxHfWYh3ocRSZmE0CGV78dtyXeAATZu5U-KuIKfhucaqrBncLgGp6sZcBtDugDFvLeMeAIB0sw1El2f6fg1X18hQBWqxl6kVvxRJu_Q0hEj8Kfozpv0XwaGU2qYrWgnrlL6fuzIenUODc2SAJQ-eT8ifX5U3n1Sh1PTAXap4VlKbd0oBp-RRR1bpFx9jrhuLHul6v5bywju4IqbyRsBDyVhGGDlIUeh6QjoGDPEqsLCjGjLzifVVi4TUuHTNNLVXMKif0Q",
             tag: "DESTAQUE",
             features: ["Dosagem Eletrônica", "FCK Garantido"]
         },
@@ -31,7 +40,7 @@ export const assetConfig = {
             id: 3,
             title: "Piso Intertravado",
             description: "Sustentabilidade e estética para pátios, calçadas e garagens industriais.",
-            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDYw23YsbsO7c99wo6ga4sZnAGOBExOI_iOtEbpCAZtxDgOT0-Uensx_nqazSPp_S9VpeUZI_zKit45oDM3pdv0su84A22dT8sC783vmB5eqp6bN0a79pW1adVDIzHkwPvJGkxipP092jt-05BvTQnGD2yludEsDztjyqsi1cWh8xPZ6QmWYlZuaJoJsI5GM4CDbZ5LJ47zLNTC7RQygOpkqtr0TXFKW5Nmj-6_Zi3tloGw6DvUkYqiSuuX6DRSxupa_DPJGGMMkmrf",
+            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDYw23YsbsO7c99wo6ga4sZnAGOBExOI_iOtEbpCAZtxDgOT0-Uensx_nqazSPp_S7VpeUZI_zKit45oDM3pdv0su84A22dT8sC783vmB5eqp6bN0a79pW1adVDIzHkwPvJGkxipP092jt-05BvTQnGD2yludEsDztjyqsi1cWh8xPZ6QmWYlZuaJoJsI5GM4CDbZ5LJ47zLJ47zLNTC7RQygOpkqtr0TXFKW5Nmj-6_Zi3tloGw6DvUkYqiSuuX6DRSxupa_DPJGGMMkmrf",
             features: ["Alta Drenagem", "Resistente"]
         }
     ],
@@ -39,12 +48,12 @@ export const assetConfig = {
         {
             name: "Areia",
             desc: "Lavada e pronta para reboco ou concreto de alta resistência.",
-            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCQ_lgjd08KjSIKrsO2H8sLzCJtL0oLBH1QIVGohu3j0u47KFfo1C_XRv5ws6mhJW4MvFC7tU7KZzfyB50rxzqw42JIBxxalTdqLkZ4oENLLFrdrPI75sX1WoLyQad3XOnUs2iCYkICEFjbe9KHm2UMsg76VX40kuNey5gvIt6MoGu1PputjQ1dS-yWby_s4nnDYYIJXtYUQ3fBHcMWoP55DkzOTt2Fpc4e_ImuEId84C-Z-zsyu3KkC02y00CQoQYmo5xGWCU5NyLr"
+            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCQ_lgjd08KjSIKrsO2H8sLzCJtL0oLBH1QIVGohu3j0u47KFfo1C_XRv5ws6mhJW4MvFC7tU7KZzFfyB50rxzqw42JIBxxalTdqLkZ4oENLLFrdrPI75sX1WoLyQad3XOnUs2iCYkICEFjbe9KHm2UMsg76VX40kuNey5gvIt6MoGu1PputjQ1dS-yWby_s4nnDYYIJXtYUQ3fBHcMWoP55DkzOTt2Fpc4e_ImuEId84C-Z-zsyu3KkC02y00CQoQYmo5xGWCU5NyLr"
         },
         {
             name: "Pedra",
             desc: "Britas 0, 1 e 2 para diferentes finalidades estruturais.",
-            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBySydLjAzbFVfpTKf14IYJgAcdBgnVVL0Pc44obv5hiX-UsIFdwzV6pqpTFO5wUT9YX8tJKIYtrLJPW9bheVASAafC0r4hd5PiSqmu5jOGhI_SLYVAUkwa6R8CKd3a0Wz3LClKRfC6ntHiTgOnzYCvDmJdATchWCfUyiH1wpRTSBIg-_b6PB4tw80d3LKEYWyuUoFt2QMjPsd84VCeONV3mQ7zzlkTGLBo4sCTBfpe2rmMlHORZWYJIG9xZ5c0zNEHEpto1f05omOo"
+            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBySydLjAzbFVfpTKf14IYJgAcdBgnVVL0Pc44obv5hiX-UsIFdwzV6pqpTFO5wUT9YX8tJKIYtrLJPW9bheVASAafC0r4hd5PiSqmu5jOGhI_SLYVAUkwa6R8CKD3a0Wz3LClKRfC6ntHiTgOnzYCvDmJdATchWCfUyiH1wpRTSBIg-_b6PB4tw80d3LKEYWyuUoFt2QMjPsd84VCeONV3mQ7zzlkTGLBo4sCTBfpe2rmMlHORZWYJIG9xZ5c0zNEHEpto1f05omOo"
         },
         {
             name: "Cimento",
@@ -53,6 +62,8 @@ export const assetConfig = {
         }
     ],
     cta: {
+        title: "Eficiência Máxima no Canteiro",
+        subtitle: "Reduza o desperdício com materiais paletizados e concreto usinado com dosagem tecnológica.",
         image: "https://images.unsplash.com/photo-1541888946425-d81bb19480c5?auto=format&fit=crop&q=80&w=2000"
     },
     integrations: {

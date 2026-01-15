@@ -19,10 +19,8 @@ import IntegrationScripts from './components/IntegrationScripts';
 
 const AppContent: React.FC = () => {
   const [config, setConfig] = useState(initialConfig);
-  const [showAdmin, setShowAdmin] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
   const { isAuthenticated, token } = useAuth();
-  
+
   // Consent State: Check localStorage on mount
   const [consent, setConsent] = useState<boolean>(() => {
     return localStorage.getItem('camp_consent') === 'granted';
@@ -34,7 +32,7 @@ const AppContent: React.FC = () => {
         const response = await fetch(`${API_URL}/config`);
         if (response.ok) {
           const data = await response.json();
-           setConfig({
+          setConfig({
             ...initialConfig,
             ...data,
             products: data.products ? initialConfig.products.map((p: any, i: number) => ({ ...p, ...data.products[i] })) : initialConfig.products,
@@ -63,23 +61,19 @@ const AppContent: React.FC = () => {
     };
 
     fetchConfig();
+  }, []);
 
+  // Atalho Shift + A para acessar o admin de forma discreta
+  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.shiftKey && e.key === 'A') {
-        handleAdminAccess();
+      if (e.shiftKey && e.key.toUpperCase() === 'A') {
+        window.location.href = '/area-restrita';
       }
     };
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isAuthenticated]);
-
-  const handleAdminAccess = () => {
-      if (isAuthenticated) {
-          setShowAdmin(true);
-      } else {
-          setShowLogin(true);
-      }
-  };
+  }, []);
 
   const handleSaveConfig = async (newConfig: any) => {
     setConfig(newConfig);
@@ -88,9 +82,9 @@ const AppContent: React.FC = () => {
     try {
       await fetch(`${API_URL}/config`, {
         method: 'POST',
-        headers: { 
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(newConfig)
       });
@@ -107,35 +101,36 @@ const AppContent: React.FC = () => {
   return (
     <BrowserRouter>
       <div className="min-h-screen font-sans flex flex-col bg-white">
-        {showLogin && (
-          <LoginModal 
-              onClose={() => setShowLogin(false)}
-              onSuccess={() => {
-                  setShowLogin(false);
-                  setShowAdmin(true);
-              }}
-          />
-        )}
-
-        {showAdmin && (
-          <AdminPanel
-            currentConfig={config}
-            onClose={() => setShowAdmin(false)}
-            onSave={handleSaveConfig}
-          />
-        )}
 
         {/* Inject scripts based on config AND CONSENT */}
         {config.integrations && <IntegrationScripts config={config.integrations} consentGiven={consent} />}
 
         <Header config={config.logo} />
-        
+
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Home config={config} />} />
             <Route path="/obrigado" element={<ThankYou />} />
             <Route path="/privacidade" element={<PrivacyPolicy />} />
             <Route path="/termos" element={<TermsOfUse />} />
+
+            {/* Rota de Admin Protegida por URL "Secundária" */}
+            <Route path="/area-restrita" element={
+              isAuthenticated ? (
+                <AdminPanel
+                  currentConfig={config}
+                  onClose={() => window.location.href = '/'}
+                  onSave={handleSaveConfig}
+                />
+              ) : (
+                <LoginModal
+                  onClose={() => window.location.href = '/'}
+                  onSuccess={() => {
+                    // O AuthContext já atualiza o estado isAuthenticated
+                  }}
+                />
+              )
+            } />
           </Routes>
         </main>
 
@@ -143,31 +138,22 @@ const AppContent: React.FC = () => {
         <FloatingWhatsApp />
 
         {/* Cookie Consent Banner */}
-        <CookieBanner 
-            onAccept={handleConsentAccept}
-            onReject={handleConsentReject}
+        <CookieBanner
+          onAccept={handleConsentAccept}
+          onReject={handleConsentReject}
         />
-
-        {/* Botão flutuante discreto para Admin */}
-        <button
-          onClick={handleAdminAccess}
-          className="fixed bottom-4 left-4 z-40 bg-navy-blue/10 hover:bg-navy-blue/20 p-2 rounded-full text-[10px] text-navy-blue/40 uppercase font-black"
-          title="Área Administrativa"
-        >
-          Admin
-        </button>
       </div>
     </BrowserRouter>
   );
 };
 
 const App: React.FC = () => {
-    return (
-        <AuthProvider>
-            <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
-            <AppContent />
-        </AuthProvider>
-    );
+  return (
+    <AuthProvider>
+      <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
+      <AppContent />
+    </AuthProvider>
+  );
 };
 
 export default App;

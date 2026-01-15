@@ -8,6 +8,8 @@ import { query } from './db.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,10 +19,50 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'camp_secret_key_change_me_in_production';
+const BASE_URL = process.env.BASE_URL || `http://localhost:${port}`;
 
-app.use(cors());
-app.use(express.json());
+// Configuração de CORS - Permitir o domínio da Hostinger
+const allowedOrigins = [
+    'http://localhost:5173',
+    'https://campgrupo.com.br',
+    'https://www.campgrupo.com.br'
+];
+
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
+
+// Rate Limiting general
+const generalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 100, // limite cada IP a 100 requisições por janela
+    message: 'Muitas requisições deste IP, tente novamente mais tarde.'
+});
+
+// Stricter limiter for sensitive routes
+const strictLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hora
+    max: 10, // limite cada IP a 10 tentativas
+    message: 'Bloqueado por segurança devido a excesso de tentativas. Tente novamente em 1 hora.'
+});
+
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Não permitido pelo CORS'));
+        }
+    },
+    credentials: true
+}));
+
+app.use(express.json({ limit: '10kb' })); // Proteção contra payloads gigantes
+app.use(generalLimiter);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Health Check
+app.get('/health', (req, res) => res.json({ status: 'ok', time: new Date().toISOString() }));
 
 // Configure Multer for image uploads
 const storage = multer.diskStorage({
@@ -35,7 +77,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Initialize Database
+        // Initialize Database
 const initDb = async () => {
     try {
         // Site Config Table
@@ -71,16 +113,10 @@ const initDb = async () => {
       )
     `);
 
-        // Create default admin if not exists
-        const adminCheck = await query('SELECT * FROM admin_users WHERE username = $1', ['admin']);
-        if (adminCheck.rows.length === 0) {
-            const salt = await bcrypt.genSalt(10);
-            const hash = await bcrypt.hash('admin123', salt);
-            await query('INSERT INTO admin_users (username, password_hash) VALUES ($1, $2)', ['admin', hash]);
-            console.log('Default admin user created (admin/admin123)');
-        }
-
-        console.log('Database initialized');
+        // SECURITY: Remove default 'admin' user if it exists
+        await query('DELETE FROM admin_users WHERE username = $1', ['admin']);
+        
+        console.log('Database initialized (restricted access)');
     } catch (err) {
         console.error('Error initializing database:', err);
     }
@@ -104,7 +140,7 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 // --- AUTH ROUTES ---
 
-app.post('/api/login', async (req, res) => {
+app.post('/api/login', strictLimiter, async (req, res) => {
     const { username, password } = req.body;
     try {
         const result = await query('SELECT * FROM admin_users WHERE username = $1', [username]);
@@ -122,7 +158,8 @@ app.post('/api/login', async (req, res) => {
         const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '24h' });
         res.json({ token, username: user.username });
     } catch (err) {
-        res.status(500).json({ error: (err as Error).message });
+        console.error('Auth Error:', err);
+        res.status(500).json({ error: 'Erro interno no servidor' });
     }
 });
 
@@ -134,7 +171,8 @@ app.get('/api/config', async (req, res) => {
         if (result.rows.length > 0) {
             res.json(result.rows[0].data);
         } else {
-            res.status(404).json({ message: 'Config not found' });
+            // Em caso de não existir, retorne um objeto vazio para o front lidar com os defaults
+            res.json({});
         }
     } catch (err) {
         res.status(500).json({ error: (err as Error).message });
@@ -144,14 +182,14 @@ app.get('/api/config', async (req, res) => {
 const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: parseInt(process.env.SMTP_PORT || '465'),
-    secure: true, // true for 465, false for other ports
+    secure: true,
     auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
     },
 });
 
-app.post('/api/leads', async (req, res) => {
+app.post('/api/leads', strictLimiter, async (req, res) => {
     const { name, email, phone, city, message } = req.body;
     try {
         await query(
@@ -162,7 +200,7 @@ app.post('/api/leads', async (req, res) => {
         // Send Email
         const mailOptions = {
             from: process.env.SMTP_FROM || '"Grupo Camp Site" <no-reply@campgrupo.com.br>',
-            to: 'vendas@campgrupo.com.br',
+            to: process.env.SMTP_TO || 'vendas@campgrupo.com.br',
             subject: `Novo Lead do Site: ${name}`,
             text: `
 Nome: ${name}
@@ -172,30 +210,29 @@ Cidade: ${city}
 Mensagem: ${message}
             `,
             html: `
-<h3>Novo Lead Recebido</h3>
-<p><strong>Nome:</strong> ${name}</p>
-<p><strong>Email:</strong> ${email}</p>
-<p><strong>Telefone:</strong> ${phone}</p>
-<p><strong>Cidade:</strong> ${city}</p>
-<p><strong>Mensagem:</strong> ${message}</p>
+<div style="font-family: sans-serif; padding: 20px; color: #333;">
+    <h3 style="color: #002D58;">Novo Lead Recebido</h3>
+    <p><strong>Nome:</strong> ${name}</p>
+    <p><strong>Email:</strong> ${email}</p>
+    <p><strong>Telefone:</strong> ${phone}</p>
+    <p><strong>Cidade:</strong> ${city}</p>
+    <p><strong>Mensagem:</strong> ${message}</p>
+</div>
             `,
         };
 
-        // Try sending email but don't fail request if it fails (just log error)
         try {
-           if (process.env.SMTP_HOST) {
-               await transporter.sendMail(mailOptions);
-               console.log('Email sent successfully');
-           } else {
-               console.log('SMTP not configured, email skipped');
-           }
+            if (process.env.SMTP_HOST) {
+                await transporter.sendMail(mailOptions);
+            }
         } catch (emailErr) {
             console.error('Error sending email:', emailErr);
         }
 
         res.json({ success: true, message: 'Lead salvo com sucesso' });
     } catch (err) {
-        res.status(500).json({ error: (err as Error).message });
+        console.error('Lead Error:', err);
+        res.status(500).json({ error: 'Erro ao processar contato' });
     }
 });
 
@@ -219,7 +256,8 @@ app.post('/api/upload', authenticateToken, upload.single('image'), (req, res) =>
     if (!req.file) {
         return res.status(400).json({ message: 'No file uploaded' });
     }
-    const imageUrl = `http://localhost:${port}/uploads/${req.file.filename}`;
+    // Usa a BASE_URL vinda do .env para a URL real
+    const imageUrl = `${BASE_URL}/uploads/${req.file.filename}`;
     res.json({ url: imageUrl });
 });
 
@@ -233,5 +271,6 @@ app.get('/api/leads', authenticateToken, async (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+    console.log(`Server running at ${BASE_URL} (Port: ${port})`);
 });
+

@@ -74,7 +74,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                 handleUpdate(path, data.url);
                 toast.success('Imagem atualizada!', { id: loadingToast });
             } else {
-                 toast.error('Erro no upload', { id: loadingToast });
+                toast.error('Erro no upload', { id: loadingToast });
             }
         } catch (error) {
             console.error('Error uploading file:', error);
@@ -139,11 +139,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
             {/* Content Scrollable Area */}
             <div className="flex-1 overflow-y-auto bg-gray-50 p-6">
                 <div className="max-w-5xl mx-auto">
-                    
+
                     {activeTab === 'config' ? (
                         <section className="space-y-8 bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                             {/* Logo Section */}
-                             <div>
+                            {/* Logo Section */}
+                            <div>
                                 <h2 className="text-lg font-bold text-navy-blue mb-4 uppercase tracking-wider border-b pb-2">Identidade (Logotipo)</h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="flex flex-col gap-2">
@@ -171,23 +171,54 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                             <div>
                                 <h2 className="text-lg font-bold text-navy-blue mb-4 uppercase tracking-wider border-b pb-2">Banner Principal (Hero)</h2>
                                 <div className="flex flex-col gap-4">
-                                    <div className="flex flex-col gap-2">
-                                        <label className="text-xs font-bold text-gray-500 uppercase">Escolher Foto</label>
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={(e) => handleFileUpload(e, 'hero.image')}
-                                            className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-navy-blue file:text-white hover:file:bg-navy-light cursor-pointer"
-                                        />
+                                    <div className="grid grid-cols-1 gap-4">
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Título Principal</label>
+                                            <textarea
+                                                value={tempConfig.hero.title}
+                                                onChange={(e) => handleUpdate('hero.title', e.target.value)}
+                                                className="border p-3 rounded-lg w-full font-bold"
+                                                rows={2}
+                                            />
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Subtítulo</label>
+                                            <textarea
+                                                value={tempConfig.hero.subtitle}
+                                                onChange={(e) => handleUpdate('hero.subtitle', e.target.value)}
+                                                className="border p-3 rounded-lg w-full text-sm"
+                                                rows={2}
+                                            />
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Texto do Botão (CTA)</label>
+                                            <input
+                                                type="text"
+                                                value={tempConfig.hero.ctaText}
+                                                onChange={(e) => handleUpdate('hero.ctaText', e.target.value)}
+                                                className="border p-3 rounded-lg w-full"
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="flex flex-col gap-2">
-                                        <label className="text-xs font-bold text-gray-500 uppercase">Ou URL da Imagem</label>
-                                        <input
-                                            type="text"
-                                            value={tempConfig.hero.image}
-                                            onChange={(e) => handleUpdate('hero.image', e.target.value)}
-                                            className="border p-3 rounded-lg w-full text-sm"
-                                        />
+                                    <div className="bg-gray-50 p-4 rounded-xl space-y-4">
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Escolher Foto de Fundo</label>
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={(e) => handleFileUpload(e, 'hero.image')}
+                                                className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-navy-blue file:text-white hover:file:bg-navy-light cursor-pointer"
+                                            />
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Ou URL da Imagem</label>
+                                            <input
+                                                type="text"
+                                                value={tempConfig.hero.image}
+                                                onChange={(e) => handleUpdate('hero.image', e.target.value)}
+                                                className="border p-3 rounded-lg w-full text-sm"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -195,36 +226,137 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                             {/* About Section */}
                             <div>
                                 <h2 className="text-lg font-bold text-navy-blue mb-4 uppercase tracking-wider border-b pb-2">Seção Sobre Nós</h2>
-                                <div className="flex flex-col gap-4">
+                                <div className="grid grid-cols-1 gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Título da Seção (Pequeno)</label>
+                                            <input
+                                                type="text"
+                                                value={tempConfig.about.sectionTitle}
+                                                onChange={(e) => handleUpdate('about.sectionTitle', e.target.value)}
+                                                className="border p-3 rounded-lg w-full"
+                                            />
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Título Grande</label>
+                                            <input
+                                                type="text"
+                                                value={tempConfig.about.title}
+                                                onChange={(e) => handleUpdate('about.title', e.target.value)}
+                                                className="border p-3 rounded-lg w-full font-bold"
+                                            />
+                                        </div>
+                                    </div>
                                     <div className="flex flex-col gap-2">
-                                        <label className="text-xs font-bold text-gray-500 uppercase">Escolher Foto da Fábrica</label>
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={(e) => handleFileUpload(e, 'about.image')}
-                                            className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-navy-blue file:text-white hover:file:bg-navy-light cursor-pointer"
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Parágrafo 1</label>
+                                        <textarea
+                                            value={tempConfig.about.description1}
+                                            onChange={(e) => handleUpdate('about.description1', e.target.value)}
+                                            className="border p-3 rounded-lg w-full"
+                                            rows={3}
                                         />
                                     </div>
                                     <div className="flex flex-col gap-2">
-                                        <label className="text-xs font-bold text-gray-500 uppercase">Ou URL da Imagem</label>
-                                        <input
-                                            type="text"
-                                            value={tempConfig.about.image}
-                                            onChange={(e) => handleUpdate('about.image', e.target.value)}
-                                            className="border p-3 rounded-lg w-full text-sm"
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Parágrafo 2</label>
+                                        <textarea
+                                            value={tempConfig.about.description2}
+                                            onChange={(e) => handleUpdate('about.description2', e.target.value)}
+                                            className="border p-3 rounded-lg w-full"
+                                            rows={2}
                                         />
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Título do Badge (Foto)</label>
+                                            <input
+                                                type="text"
+                                                value={tempConfig.about.badgeTitle}
+                                                onChange={(e) => handleUpdate('about.badgeTitle', e.target.value)}
+                                                className="border p-3 rounded-lg w-full"
+                                            />
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Subtítulo do Badge</label>
+                                            <input
+                                                type="text"
+                                                value={tempConfig.about.badgeSubtitle}
+                                                onChange={(e) => handleUpdate('about.badgeSubtitle', e.target.value)}
+                                                className="border p-3 rounded-lg w-full text-xs"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="bg-gray-50 p-4 rounded-xl space-y-4">
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Escolher Foto da Fábrica</label>
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={(e) => handleFileUpload(e, 'about.image')}
+                                                className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-navy-blue file:text-white hover:file:bg-navy-light cursor-pointer"
+                                            />
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Ou URL da Imagem</label>
+                                            <input
+                                                type="text"
+                                                value={tempConfig.about.image}
+                                                onChange={(e) => handleUpdate('about.image', e.target.value)}
+                                                className="border p-3 rounded-lg w-full text-sm"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                             {/* Products Section */}
+                            {/* Products Section */}
                             <div>
-                                <h2 className="text-lg font-bold text-navy-blue mb-4 uppercase tracking-wider border-b pb-2">Produtos (Imagens)</h2>
+                                <h2 className="text-lg font-bold text-navy-blue mb-4 uppercase tracking-wider border-b pb-2">Produtos (Catálogo)</h2>
                                 <div className="space-y-6">
                                     {tempConfig.products.map((p: any, i: number) => (
-                                        <div key={p.id} className="flex flex-col gap-3 bg-gray-50 p-4 rounded-lg">
-                                            <label className="text-sm font-black text-navy-blue">{p.title}</label>
+                                        <div key={p.id} className="flex flex-col gap-3 bg-gray-50 p-6 rounded-2xl border border-gray-100">
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div className="flex flex-col gap-2">
+                                                    <label className="text-[10px] font-bold text-gray-500 uppercase">Título do Produto</label>
+                                                    <input
+                                                        type="text"
+                                                        value={p.title}
+                                                        onChange={(e) => {
+                                                            const newProducts = [...tempConfig.products];
+                                                            newProducts[i].title = e.target.value;
+                                                            setTempConfig({ ...tempConfig, products: newProducts });
+                                                        }}
+                                                        className="border p-3 rounded-lg w-full font-bold"
+                                                    />
+                                                </div>
+                                                <div className="flex flex-col gap-2">
+                                                    <label className="text-[10px] font-bold text-gray-500 uppercase">Etiqueta (Tag)</label>
+                                                    <input
+                                                        type="text"
+                                                        value={p.tag || ''}
+                                                        onChange={(e) => {
+                                                            const newProducts = [...tempConfig.products];
+                                                            newProducts[i].tag = e.target.value;
+                                                            setTempConfig({ ...tempConfig, products: newProducts });
+                                                        }}
+                                                        className="border p-3 rounded-lg w-full text-xs"
+                                                        placeholder="Ex: NOVIDADE, DESTAQUE"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="flex flex-col gap-2">
+                                                <label className="text-[10px] font-bold text-gray-500 uppercase">Descrição</label>
+                                                <textarea
+                                                    value={p.description}
+                                                    onChange={(e) => {
+                                                        const newProducts = [...tempConfig.products];
+                                                        newProducts[i].description = e.target.value;
+                                                        setTempConfig({ ...tempConfig, products: newProducts });
+                                                    }}
+                                                    className="border p-3 rounded-lg w-full text-sm"
+                                                    rows={2}
+                                                />
+                                            </div>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                                                 <div className="flex flex-col gap-1">
                                                     <label className="text-[10px] font-bold text-gray-500 uppercase">Subir Foto</label>
                                                     <input
@@ -241,7 +373,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                                                     />
                                                 </div>
                                                 <div className="flex flex-col gap-1">
-                                                    <label className="text-[10px] font-bold text-gray-500 uppercase">URL</label>
+                                                    <label className="text-[10px] font-bold text-gray-500 uppercase">URL ou Caminho</label>
                                                     <input
                                                         type="text"
                                                         value={p.image}
@@ -259,32 +391,54 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                                 </div>
                             </div>
 
-                             {/* CTA Section */}
+                            {/* CTA Section */}
                             <div>
-                                <h2 className="text-lg font-bold text-navy-blue mb-4 uppercase tracking-wider border-b pb-2">Banner de Eficiência (CTA)</h2>
+                                <h2 className="text-lg font-bold text-navy-blue mb-4 uppercase tracking-wider border-b pb-2">Banner de Impacto Final (CTA)</h2>
                                 <div className="flex flex-col gap-4">
-                                     <div className="flex flex-col gap-2">
-                                        <label className="text-xs font-bold text-gray-500 uppercase">Escolher Foto</label>
-                                         <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={(e) => handleFileUpload(e, 'cta.image')}
-                                            className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-navy-blue file:text-white hover:file:bg-navy-light cursor-pointer"
-                                        />
+                                    <div className="grid grid-cols-1 gap-4">
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Título de Impacto</label>
+                                            <textarea
+                                                value={tempConfig.cta.title}
+                                                onChange={(e) => handleUpdate('cta.title', e.target.value)}
+                                                className="border p-3 rounded-lg w-full font-bold text-lg"
+                                                rows={2}
+                                            />
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Texto Secundário (Opcional)</label>
+                                            <input
+                                                type="text"
+                                                value={tempConfig.cta.subtitle || ''}
+                                                onChange={(e) => handleUpdate('cta.subtitle', e.target.value)}
+                                                className="border p-3 rounded-lg w-full"
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="flex flex-col gap-2">
-                                        <label className="text-xs font-bold text-gray-500 uppercase">Ou URL da Imagem</label>
-                                        <input
-                                            type="text"
-                                            value={tempConfig.cta.image}
-                                            onChange={(e) => handleUpdate('cta.image', e.target.value)}
-                                            className="border p-3 rounded-lg w-full text-sm"
-                                        />
+                                    <div className="bg-gray-50 p-4 rounded-xl space-y-4 mt-2">
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Escolher Foto de Fundo</label>
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={(e) => handleFileUpload(e, 'cta.image')}
+                                                className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-navy-blue file:text-white hover:file:bg-navy-light cursor-pointer"
+                                            />
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Ou URL da Imagem</label>
+                                            <input
+                                                type="text"
+                                                value={tempConfig.cta.image}
+                                                onChange={(e) => handleUpdate('cta.image', e.target.value)}
+                                                className="border p-3 rounded-lg w-full text-sm"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            
+
                             {/* Integrations Section */}
                             <div>
                                 <h2 className="text-lg font-bold text-navy-blue mb-4 uppercase tracking-wider border-b pb-2">Integrações e Tags</h2>
