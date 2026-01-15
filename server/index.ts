@@ -14,32 +14,22 @@ import rateLimit from 'express-rate-limit';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// --- SECURITY MIDDLEWARE & SANITIZATION ---
+// --- SECURITY MIDDLEWARE & LIGHT SANITIZATION ---
 
 /**
- * Escapes common HTML characters to prevent XSS.
- * This is a simple but effective manual sanitization.
+ * Very light sanitization to prevent basic script injections 
+ * without breaking URLs or professional content.
  */
 const sanitizeString = (str: string): string => {
     return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#x27;')
-        .replace(/\//g, '&#x2F;');
+        .replace(/<script/gi, '&lt;script')
+        .replace(/<\/script/gi, '&lt;/script')
+        .replace(/on\w+=/gi, 'blocked='); // Blocks onmouseover, onclick, etc.
 };
 
-/**
- * Recursively sanitizes all strings in an object or array.
- */
 const sanitizeDeep = (obj: any): any => {
     if (typeof obj !== 'object' || obj === null) return obj;
-    
-    if (Array.isArray(obj)) {
-        return obj.map(item => sanitizeDeep(item));
-    }
-
+    if (Array.isArray(obj)) return obj.map(item => sanitizeDeep(item));
     const newObj: any = {};
     for (const key in obj) {
         if (typeof obj[key] === 'string') {
@@ -54,7 +44,7 @@ const sanitizeDeep = (obj: any): any => {
 };
 
 const xssSanitizer = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    if (req.body && typeof req.body === 'object') {
+    if (req.body && typeof req.body === 'object' && req.path === '/api/leads') {
         req.body = sanitizeDeep(req.body);
     }
     next();
@@ -395,5 +385,7 @@ app.delete('/api/leads/:id', authenticateToken, async (req, res) => {
 });
 
 app.listen(port, () => {
+    const maskedDb = (process.env.DATABASE_URL || '').replace(/:([^:@]+)@/, ':****@');
     console.log(`🚀 Server running at ${BASE_URL} (Port: ${port})`);
+    console.log(`📡 DB URL: ${maskedDb}`);
 });
