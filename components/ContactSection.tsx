@@ -1,7 +1,48 @@
-
-import React from 'react';
+import React, { useState } from 'react';
+import API_URL from '../config/api';
+import toast from 'react-hot-toast';
 
 const ContactSection: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    message: ''
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name || !formData.phone) {
+        toast.error('Por favor, preencha nome e WhatsApp.');
+        return;
+    }
+
+    setLoading(true);
+    const toastId = toast.loading('Enviando mensagem...');
+
+    try {
+        const response = await fetch(`${API_URL}/leads`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (response.ok) {
+            toast.success('Mensagem enviada com sucesso!', { id: toastId });
+            setFormData({ name: '', phone: '', message: '' });
+        } else {
+            toast.error('Erro ao enviar. Tente novamente.', { id: toastId });
+        }
+    } catch (error) {
+        console.error(error);
+        toast.error('Erro de conexão.', { id: toastId });
+    } finally {
+        setLoading(false);
+    }
+  };
+
   return (
     <section className="py-24 bg-white" id="contato">
       <div className="max-w-7xl mx-auto px-6">
@@ -69,12 +110,15 @@ const ContactSection: React.FC = () => {
                 Entre em contato conosco
               </h3>
 
-              <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+              <form className="space-y-6" onSubmit={handleSubmit}>
                 <div>
                   <input 
                     type="text" 
                     placeholder="Nome" 
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
                     className="w-full bg-white border border-gray-200 rounded-md px-4 py-4 text-gray-700 focus:ring-1 focus:ring-[#0a1a6b] focus:border-[#0a1a6b] transition-all outline-none placeholder:text-gray-300"
+                    required
                   />
                 </div>
 
@@ -82,7 +126,10 @@ const ContactSection: React.FC = () => {
                   <input 
                     type="tel" 
                     placeholder="Telefone/Whatsapp" 
+                    value={formData.phone}
+                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
                     className="w-full bg-white border border-gray-200 rounded-md px-4 py-4 text-gray-700 focus:ring-1 focus:ring-[#0a1a6b] focus:border-[#0a1a6b] transition-all outline-none placeholder:text-gray-300"
+                    required
                   />
                 </div>
 
@@ -90,12 +137,18 @@ const ContactSection: React.FC = () => {
                   <textarea 
                     placeholder="Mensagem" 
                     rows={4}
+                    value={formData.message}
+                    onChange={(e) => setFormData({...formData, message: e.target.value})}
                     className="w-full bg-white border border-gray-200 rounded-md px-4 py-4 text-gray-700 focus:ring-1 focus:ring-[#0a1a6b] focus:border-[#0a1a6b] transition-all outline-none resize-none placeholder:text-gray-300"
                   ></textarea>
                 </div>
 
-                <button className="w-full bg-[#11237c] hover:bg-[#0a1a6b] text-white py-4 rounded-md font-bold text-lg transition-all shadow-lg active:scale-[0.99]">
-                  Enviar
+                <button 
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-[#11237c] hover:bg-[#0a1a6b] text-white py-4 rounded-md font-bold text-lg transition-all shadow-lg active:scale-[0.99] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center"
+                >
+                  {loading ? 'Enviando...' : 'Enviar'}
                 </button>
               </form>
             </div>

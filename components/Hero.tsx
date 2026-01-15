@@ -1,5 +1,7 @@
 
-import React from 'react';
+import React, { useState } from 'react';
+import API_URL from '../config/api';
+import toast from 'react-hot-toast';
 
 interface HeroProps {
   config: {
@@ -9,6 +11,12 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = ({ config }) => {
   const heroImage = config.image;
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    city: ''
+  });
 
   const mainProducts = [
     { title: "Concreto Usinado", icon: "precision_manufacturing" },
@@ -16,13 +24,46 @@ const Hero: React.FC<HeroProps> = ({ config }) => {
     { title: "Piso Intertravado", icon: "texture" }
   ];
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name || !formData.phone) {
+        toast.error('Por favor, preencha nome e WhatsApp.');
+        return;
+    }
+
+    setLoading(true);
+    const toastId = toast.loading('Enviando solicitação...');
+
+    try {
+        const response = await fetch(`${API_URL}/leads`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (response.ok) {
+            toast.success('Solicitação recebida! Entraremos em contato em breve.', { id: toastId });
+            setFormData({ name: '', phone: '', city: '' });
+        } else {
+            toast.error('Erro ao enviar. Tente novamente.', { id: toastId });
+        }
+    } catch (error) {
+        console.error(error);
+        toast.error('Erro de conexão.', { id: toastId });
+    } finally {
+        setLoading(false);
+    }
+  };
+
   return (
     <section id="inicio" className="relative min-h-[850px] flex items-center overflow-hidden">
       {/* Background Image & Overlay */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-r from-navy-blue/95 via-navy-blue/80 to-navy-blue/40 z-10"></div>
         <div
-          className="w-full h-full bg-center bg-cover scale-105"
+          className="w-full h-full bg-center bg-cover scale-105 transition-transform duration-[2s]"
           style={{ backgroundImage: `url('${heroImage}')` }}
         ></div>
       </div>
@@ -31,7 +72,7 @@ const Hero: React.FC<HeroProps> = ({ config }) => {
 
         {/* Left Side: SEO Copy & Products */}
         <div className="lg:col-span-7 flex flex-col gap-8 self-center">
-          <div className="inline-flex w-fit items-center gap-2 bg-primary/20 border border-primary/30 px-3 py-1 rounded-full text-primary text-xs font-bold uppercase tracking-wider">
+          <div className="inline-flex w-fit items-center gap-2 bg-primary/20 border border-primary/30 px-3 py-1 rounded-full text-primary text-xs font-bold uppercase tracking-wider animate-fade-in-up">
             <span className="material-symbols-outlined text-sm">verified_user</span>
             Qualidade ABCP Direto da Fábrica
           </div>
@@ -46,7 +87,7 @@ const Hero: React.FC<HeroProps> = ({ config }) => {
             </p>
             <div className="flex flex-col gap-3">
               {mainProducts.map((p, i) => (
-                <div key={i} className="flex items-center gap-3 text-white group cursor-default">
+                <div key={i} className="flex items-center gap-3 text-white group cursor-default hover:translate-x-2 transition-transform">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-navy-blue transition-all duration-300">
                     <span className="material-symbols-outlined fill-1">{p.icon}</span>
                   </div>
@@ -79,25 +120,55 @@ const Hero: React.FC<HeroProps> = ({ config }) => {
               <p className="text-sm text-gray-500 font-medium">Resposta rápida via WhatsApp ou Email.</p>
             </div>
 
-            <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-black text-navy-blue uppercase tracking-wider ml-1">Nome</label>
-                <input type="text" placeholder="Seu nome" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-navy-blue focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" />
+                <input 
+                    type="text" 
+                    placeholder="Seu nome" 
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-navy-blue focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" 
+                    required
+                />
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-black text-navy-blue uppercase tracking-wider ml-1">WhatsApp</label>
-                <input type="tel" placeholder="(19) 99999-9999" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-navy-blue focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" />
+                <input 
+                    type="tel" 
+                    placeholder="(19) 99999-9999" 
+                    value={formData.phone}
+                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-navy-blue focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" 
+                    required
+                />
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-black text-navy-blue uppercase tracking-wider ml-1">Cidade</label>
-                <input type="text" placeholder="Cidade da Obra" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-navy-blue focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" />
+                <input 
+                    type="text" 
+                    placeholder="Cidade da Obra" 
+                    value={formData.city}
+                    onChange={(e) => setFormData({...formData, city: e.target.value})}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-navy-blue focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" 
+                />
               </div>
 
-              <button className="mt-4 w-full bg-navy-blue text-white py-4 rounded-xl font-black text-lg hover:bg-navy-light active:scale-[0.98] transition-all shadow-xl shadow-navy-blue/20 flex items-center justify-center gap-2">
-                <span className="material-symbols-outlined">send</span>
-                Enviar Agora
+              <button 
+                type="submit" 
+                disabled={loading}
+                className="mt-4 w-full bg-navy-blue text-white py-4 rounded-xl font-black text-lg hover:bg-navy-light active:scale-[0.98] transition-all shadow-xl shadow-navy-blue/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                {loading ? (
+                    <span className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                ) : (
+                    <>
+                        <span className="material-symbols-outlined">send</span>
+                        Enviar Agora
+                    </>
+                )}
               </button>
 
               <p className="mt-2 text-[10px] text-center text-gray-400 font-bold uppercase">Preço de fábrica e entrega rápida</p>

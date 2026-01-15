@@ -15,19 +15,25 @@ import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
 import AdminPanel from './components/AdminPanel';
+import LoginModal from './components/LoginModal';
 import { assetConfig as initialConfig } from './assetConfig';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { Toaster } from 'react-hot-toast';
+import API_URL from './config/api';
 
-const App: React.FC = () => {
+const AppContent: React.FC = () => {
   const [config, setConfig] = useState(initialConfig);
   const [showAdmin, setShowAdmin] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const { isAuthenticated, token } = useAuth();
 
   useEffect(() => {
     const fetchConfig = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/config');
+        const response = await fetch(`${API_URL}/config`);
         if (response.ok) {
           const data = await response.json();
-          setConfig({
+           setConfig({
             ...initialConfig,
             ...data,
             products: data.products ? initialConfig.products.map((p: any, i: number) => ({ ...p, ...data.products[i] })) : initialConfig.products,
@@ -59,30 +65,52 @@ const App: React.FC = () => {
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.shiftKey && e.key === 'A') {
-        setShowAdmin(prev => !prev);
+        handleAdminAccess();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [isAuthenticated]); // Re-bind listener if auth state changes (though not strictly necessary for this logic)
+
+  const handleAdminAccess = () => {
+      if (isAuthenticated) {
+          setShowAdmin(true);
+      } else {
+          setShowLogin(true);
+      }
+  };
 
   const handleSaveConfig = async (newConfig: any) => {
     setConfig(newConfig);
     localStorage.setItem('campgrupo_assets', JSON.stringify(newConfig));
 
     try {
-      await fetch('http://localhost:3001/api/config', {
+      await fetch(`${API_URL}/config`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(newConfig)
       });
     } catch (e) {
       console.error("Erro ao salvar no backend", e);
+      throw e; // Propagate error for AdminPanel to handle
     }
   };
 
   return (
     <div className="min-h-screen font-sans flex flex-col bg-white">
+      {showLogin && (
+        <LoginModal 
+            onClose={() => setShowLogin(false)}
+            onSuccess={() => {
+                setShowLogin(false);
+                setShowAdmin(true);
+            }}
+        />
+      )}
+
       {showAdmin && (
         <AdminPanel
           currentConfig={config}
@@ -108,15 +136,25 @@ const App: React.FC = () => {
       <Footer />
       <FloatingWhatsApp />
 
-      {/* Botão flutuante discreto para Admin para facilitar o acesso do usuário agora */}
+      {/* Botão flutuante discreto para Admin */}
       <button
-        onClick={() => setShowAdmin(true)}
+        onClick={handleAdminAccess}
         className="fixed bottom-4 left-4 z-40 bg-navy-blue/10 hover:bg-navy-blue/20 p-2 rounded-full text-[10px] text-navy-blue/40 uppercase font-black"
+        title="Área Administrativa"
       >
         Admin
       </button>
     </div>
   );
+};
+
+const App: React.FC = () => {
+    return (
+        <AuthProvider>
+            <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
+            <AppContent />
+        </AuthProvider>
+    );
 };
 
 export default App;
