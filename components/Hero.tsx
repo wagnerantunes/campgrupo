@@ -1,8 +1,8 @@
-
 import React, { useState } from 'react';
 import API_URL from '../config/api';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { optimizeImageUrl } from '../utils/imageOptimizer';
 
 interface HeroProps {
   config: {
@@ -14,7 +14,7 @@ interface HeroProps {
 }
 
 const Hero: React.FC<HeroProps> = ({ config }) => {
-  const heroImage = config.image;
+  const heroImage = optimizeImageUrl(config.image, 1920);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -66,12 +66,16 @@ const Hero: React.FC<HeroProps> = ({ config }) => {
   return (
     <section id="inicio" className="relative min-h-[850px] flex items-center overflow-hidden">
       {/* Background Image & Overlay */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 bg-navy-blue">
         <div className="absolute inset-0 bg-gradient-to-r from-navy-blue/95 via-navy-blue/80 to-navy-blue/40 z-10"></div>
-        <div
-          className="w-full h-full bg-center bg-cover scale-105 transition-transform duration-[2s]"
-          style={{ backgroundImage: `url('${heroImage}')` }}
-        ></div>
+        <img
+          src={heroImage}
+          alt=""
+          className="w-full h-full object-cover scale-105 transition-transform duration-[2s] pointer-events-none"
+          // @ts-ignore
+          fetchpriority="high"
+          loading="eager"
+        />
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-20 grid grid-cols-1 lg:grid-cols-12 gap-12 py-16 lg:py-24">

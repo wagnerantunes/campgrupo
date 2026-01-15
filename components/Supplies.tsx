@@ -1,5 +1,5 @@
-
 import React from 'react';
+import { optimizeImageUrl } from '../utils/imageOptimizer';
 
 interface SuppliesProps {
   config: any[];
@@ -26,7 +26,7 @@ const Supplies: React.FC<SuppliesProps> = ({ config }) => {
             <div key={i} className="group flex flex-col bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 transform hover:-translate-y-2">
               <div className="h-64 md:h-72 overflow-hidden relative">
                 <img
-                  src={item.image}
+                  src={optimizeImageUrl(item.image, 800)}
                   alt={`${item.name} para construção em Campinas`}
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   loading="lazy"

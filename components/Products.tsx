@@ -1,3 +1,4 @@
+import { optimizeImageUrl } from '../utils/imageOptimizer';
 
 import React from 'react';
 
@@ -10,33 +11,33 @@ interface Product {
 }
 
 interface ProductsProps {
-  config: any[];
+  config: Product[];
 }
 
 const Products: React.FC<ProductsProps> = ({ config }) => {
   const products = config;
 
   return (
-    <section className="py-24 bg-gray-50" id="produtos">
+    <section className="py-24 bg-gray-50/50" id="produtos">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-          <div className="flex flex-col gap-4">
-            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-navy-blue">Nossos Produtos</h2>
-            <p className="text-gray-600 max-w-xl font-medium">Linha completa de materiais estruturais com o melhor custo-benefício da região.</p>
+        <div className="flex flex-col gap-4 mb-16">
+          <div className="flex items-center gap-3">
+            <span className="w-12 h-1.5 bg-primary rounded-full"></span>
+            <span className="text-xs font-black uppercase tracking-[0.3em] text-gray-400">Catálogo</span>
           </div>
-          <button className="text-navy-blue font-black flex items-center gap-2 hover:text-navy-light transition-colors">
-            Catálogo Completo <span className="material-symbols-outlined">arrow_forward</span>
-          </button>
+          <h2 className="text-3xl md:text-5xl font-black text-navy-blue">
+            Nossos Principais Produtos
+          </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {products.map((p, i) => (
-            <div key={i} className="group bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-lg hover:-translate-y-1 transition-all">
+            <div key={i} className="group flex flex-col bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 transform hover:-translate-y-2">
               <div className="h-64 overflow-hidden relative">
                 <img
-                  src={p.image}
-                  alt={`${p.title} - Grupo Camp`}
-                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  src={optimizeImageUrl(p.image, 800)}
+                  alt={p.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   loading="lazy"
                 />
                 {p.tag && (
