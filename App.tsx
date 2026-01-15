@@ -1,31 +1,32 @@
 
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
-import Hero from './components/Hero';
-import LocationsBar from './components/LocationsBar';
-import AboutUs from './components/AboutUs';
-import Partners from './components/Partners';
-import Products from './components/Products';
-import Supplies from './components/Supplies';
-import EfficiencyCTA from './components/EfficiencyCTA';
-import ABCPBadge from './components/ABCPBadge';
-import ServiceAreasCTA from './components/ServiceAreasCTA';
-import Testimonials from './components/Testimonials';
-import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
 import AdminPanel from './components/AdminPanel';
 import LoginModal from './components/LoginModal';
+import Home from './components/Home';
+import ThankYou from './components/ThankYou';
+import CookieBanner from './components/CookieBanner';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import TermsOfUse from './components/TermsOfUse';
 import { assetConfig as initialConfig } from './assetConfig';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Toaster } from 'react-hot-toast';
 import API_URL from './config/api';
+import IntegrationScripts from './components/IntegrationScripts';
 
 const AppContent: React.FC = () => {
   const [config, setConfig] = useState(initialConfig);
   const [showAdmin, setShowAdmin] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const { isAuthenticated, token } = useAuth();
+  
+  // Consent State: Check localStorage on mount
+  const [consent, setConsent] = useState<boolean>(() => {
+    return localStorage.getItem('camp_consent') === 'granted';
+  });
 
   useEffect(() => {
     const fetchConfig = async () => {
@@ -70,7 +71,7 @@ const AppContent: React.FC = () => {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isAuthenticated]); // Re-bind listener if auth state changes (though not strictly necessary for this logic)
+  }, [isAuthenticated]);
 
   const handleAdminAccess = () => {
       if (isAuthenticated) {
@@ -95,56 +96,68 @@ const AppContent: React.FC = () => {
       });
     } catch (e) {
       console.error("Erro ao salvar no backend", e);
-      throw e; // Propagate error for AdminPanel to handle
+      throw e;
     }
   };
 
+  // Callback to handle consent acceptance/rejection
+  const handleConsentAccept = () => setConsent(true);
+  const handleConsentReject = () => setConsent(false);
+
   return (
-    <div className="min-h-screen font-sans flex flex-col bg-white">
-      {showLogin && (
-        <LoginModal 
-            onClose={() => setShowLogin(false)}
-            onSuccess={() => {
-                setShowLogin(false);
-                setShowAdmin(true);
-            }}
+    <BrowserRouter>
+      <div className="min-h-screen font-sans flex flex-col bg-white">
+        {showLogin && (
+          <LoginModal 
+              onClose={() => setShowLogin(false)}
+              onSuccess={() => {
+                  setShowLogin(false);
+                  setShowAdmin(true);
+              }}
+          />
+        )}
+
+        {showAdmin && (
+          <AdminPanel
+            currentConfig={config}
+            onClose={() => setShowAdmin(false)}
+            onSave={handleSaveConfig}
+          />
+        )}
+
+        {/* Inject scripts based on config AND CONSENT */}
+        {config.integrations && <IntegrationScripts config={config.integrations} consentGiven={consent} />}
+
+        <Header config={config.logo} />
+        
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Home config={config} />} />
+            <Route path="/obrigado" element={<ThankYou />} />
+            <Route path="/privacidade" element={<PrivacyPolicy />} />
+            <Route path="/termos" element={<TermsOfUse />} />
+          </Routes>
+        </main>
+
+        <Footer />
+        <FloatingWhatsApp />
+
+        {/* Cookie Consent Banner */}
+        <CookieBanner 
+            onAccept={handleConsentAccept}
+            onReject={handleConsentReject}
         />
-      )}
 
-      {showAdmin && (
-        <AdminPanel
-          currentConfig={config}
-          onClose={() => setShowAdmin(false)}
-          onSave={handleSaveConfig}
-        />
-      )}
-
-      <Header config={config.logo} />
-      <main className="flex-grow">
-        <Hero config={config.hero} />
-        <LocationsBar />
-        <AboutUs config={config.about} />
-        <Partners />
-        <Products config={config.products} />
-        <Supplies config={config.supplies} />
-        <EfficiencyCTA config={config.cta} />
-        <ABCPBadge />
-        <ServiceAreasCTA />
-        <Testimonials />
-        <ContactSection />
-      </main>
-      <Footer />
-      <FloatingWhatsApp />
-
-      {/* Botão flutuante discreto para Admin */}
-      <button
-        onClick={handleAdminAccess}
-        className="fixed bottom-4 left-4 z-40 bg-navy-blue/10 hover:bg-navy-blue/20 p-2 rounded-full text-[10px] text-navy-blue/40 uppercase font-black"
-        title="Área Administrativa"
-      >
-        Admin
-      </button>
-    </div>
+        {/* Botão flutuante discreto para Admin */}
+        <button
+          onClick={handleAdminAccess}
+          className="fixed bottom-4 left-4 z-40 bg-navy-blue/10 hover:bg-navy-blue/20 p-2 rounded-full text-[10px] text-navy-blue/40 uppercase font-black"
+          title="Área Administrativa"
+        >
+          Admin
+        </button>
+      </div>
+    </BrowserRouter>
   );
 };
 

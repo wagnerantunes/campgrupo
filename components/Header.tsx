@@ -36,10 +36,15 @@ const Header: React.FC<HeaderProps> = ({ config }) => {
         </nav>
 
         <div className="flex items-center gap-4">
-          <button className="hidden md:flex items-center gap-2 bg-navy-blue text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-navy-light transition-all shadow-lg shadow-navy-blue/10">
+          <a
+            href="https://wa.me/551939096852?text=Ol%C3%A1%2C%20vim%20atraves%20do%20site%20e%20gostaria%20de%20um%20or%C3%A7amento%20por%20favor"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden md:flex items-center gap-2 bg-navy-blue text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-navy-light transition-all shadow-lg shadow-navy-blue/10"
+          >
             <span className="material-symbols-outlined text-lg">chat_bubble</span>
             WhatsApp
-          </button>
+          </a>
         </div>
       </div>
     </header>

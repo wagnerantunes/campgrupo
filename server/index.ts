@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 import { query } from './db.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -140,6 +141,16 @@ app.get('/api/config', async (req, res) => {
     }
 });
 
+const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT || '465'),
+    secure: true, // true for 465, false for other ports
+    auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+    },
+});
+
 app.post('/api/leads', async (req, res) => {
     const { name, email, phone, city, message } = req.body;
     try {
@@ -147,6 +158,41 @@ app.post('/api/leads', async (req, res) => {
             'INSERT INTO leads (name, email, phone, city, message) VALUES ($1, $2, $3, $4, $5)',
             [name, email, phone, city, message]
         );
+
+        // Send Email
+        const mailOptions = {
+            from: process.env.SMTP_FROM || '"Grupo Camp Site" <no-reply@campgrupo.com.br>',
+            to: 'vendas@campgrupo.com.br',
+            subject: `Novo Lead do Site: ${name}`,
+            text: `
+Nome: ${name}
+Email: ${email}
+Telefone: ${phone}
+Cidade: ${city}
+Mensagem: ${message}
+            `,
+            html: `
+<h3>Novo Lead Recebido</h3>
+<p><strong>Nome:</strong> ${name}</p>
+<p><strong>Email:</strong> ${email}</p>
+<p><strong>Telefone:</strong> ${phone}</p>
+<p><strong>Cidade:</strong> ${city}</p>
+<p><strong>Mensagem:</strong> ${message}</p>
+            `,
+        };
+
+        // Try sending email but don't fail request if it fails (just log error)
+        try {
+           if (process.env.SMTP_HOST) {
+               await transporter.sendMail(mailOptions);
+               console.log('Email sent successfully');
+           } else {
+               console.log('SMTP not configured, email skipped');
+           }
+        } catch (emailErr) {
+            console.error('Error sending email:', emailErr);
+        }
+
         res.json({ success: true, message: 'Lead salvo com sucesso' });
     } catch (err) {
         res.status(500).json({ error: (err as Error).message });

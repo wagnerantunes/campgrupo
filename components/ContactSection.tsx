@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import API_URL from '../config/api';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const ContactSection: React.FC = () => {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -32,6 +34,7 @@ const ContactSection: React.FC = () => {
         if (response.ok) {
             toast.success('Mensagem enviada com sucesso!', { id: toastId });
             setFormData({ name: '', phone: '', message: '' });
+            navigate('/obrigado');
         } else {
             toast.error('Erro ao enviar. Tente novamente.', { id: toastId });
         }
@@ -96,9 +99,9 @@ const ContactSection: React.FC = () => {
                 <div className="text-[#0a1a6b]">
                   <span className="material-symbols-outlined fill-1">call</span>
                 </div>
-                <p className="text-gray-700 font-semibold">
-                  19 3909 6852
-                </p>
+                  <a href="https://wa.me/551939096852?text=Ol%C3%A1%2C%20vim%20atraves%20do%20site%20e%20gostaria%20de%20um%20or%C3%A7amento%20por%20favor" target="_blank" rel="noopener noreferrer" className="text-gray-700 font-semibold hover:text-[#0a1a6b] transition-colors">
+                    19 3909 6852
+                  </a>
               </div>
             </div>
           </div>

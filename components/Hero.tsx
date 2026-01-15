@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import API_URL from '../config/api';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 interface HeroProps {
   config: {
@@ -12,6 +13,7 @@ interface HeroProps {
 const Hero: React.FC<HeroProps> = ({ config }) => {
   const heroImage = config.image;
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -44,8 +46,9 @@ const Hero: React.FC<HeroProps> = ({ config }) => {
         });
 
         if (response.ok) {
-            toast.success('Solicitação recebida! Entraremos em contato em breve.', { id: toastId });
+            toast.success('Solicitação recebida!', { id: toastId });
             setFormData({ name: '', phone: '', city: '' });
+            navigate('/obrigado');
         } else {
             toast.error('Erro ao enviar. Tente novamente.', { id: toastId });
         }

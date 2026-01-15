@@ -284,6 +284,67 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                                 </div>
                             </div>
 
+                            
+                            {/* Integrations Section */}
+                            <div>
+                                <h2 className="text-lg font-bold text-navy-blue mb-4 uppercase tracking-wider border-b pb-2">Integrações e Tags</h2>
+                                <div className="flex flex-col gap-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Google Ads ID (Ex: AW-123456789)</label>
+                                            <input
+                                                type="text"
+                                                value={tempConfig.integrations?.googleAdsId || ''}
+                                                onChange={(e) => handleUpdate('integrations.googleAdsId', e.target.value)}
+                                                className="border p-3 rounded-lg w-full"
+                                                placeholder="AW-XXXXXXXXX"
+                                            />
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Google Tag Manager ID (Ex: GTM-XXXX)</label>
+                                            <input
+                                                type="text"
+                                                value={tempConfig.integrations?.googleTagManagerId || ''}
+                                                onChange={(e) => handleUpdate('integrations.googleTagManagerId', e.target.value)}
+                                                className="border p-3 rounded-lg w-full"
+                                                placeholder="GTM-XXXXXXX"
+                                            />
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Facebook Pixel ID</label>
+                                            <input
+                                                type="text"
+                                                value={tempConfig.integrations?.facebookPixelId || ''}
+                                                onChange={(e) => handleUpdate('integrations.facebookPixelId', e.target.value)}
+                                                className="border p-3 rounded-lg w-full"
+                                                placeholder="123456789012345"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="flex flex-col gap-2">
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Scripts Personalizados (HEAD)</label>
+                                        <p className="text-[10px] text-gray-400">Cole aqui códigos que devem ir dentro da tag &lt;head&gt;. Ex: Meta verification, Scripts de Analytics.</p>
+                                        <textarea
+                                            value={tempConfig.integrations?.headScripts || ''}
+                                            onChange={(e) => handleUpdate('integrations.headScripts', e.target.value)}
+                                            className="border p-3 rounded-lg w-full font-mono text-xs h-32"
+                                            placeholder="<script>...</script>"
+                                        />
+                                    </div>
+
+                                    <div className="flex flex-col gap-2">
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Scripts Personalizados (BODY)</label>
+                                        <p className="text-[10px] text-gray-400">Cole aqui códigos que devem ir no início da tag &lt;body&gt;. Ex: GTM noscript.</p>
+                                        <textarea
+                                            value={tempConfig.integrations?.bodyScripts || ''}
+                                            onChange={(e) => handleUpdate('integrations.bodyScripts', e.target.value)}
+                                            className="border p-3 rounded-lg w-full font-mono text-xs h-32"
+                                            placeholder="<noscript>...</noscript>"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
                         </section>
                     ) : (
                         <div className="space-y-6">

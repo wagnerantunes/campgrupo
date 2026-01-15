@@ -54,5 +54,12 @@ export const assetConfig = {
     ],
     cta: {
         image: "https://images.unsplash.com/photo-1541888946425-d81bb19480c5?auto=format&fit=crop&q=80&w=2000"
+    },
+    integrations: {
+        googleAdsId: "AW-384544178",
+        googleTagManagerId: "",
+        facebookPixelId: "",
+        headScripts: "",
+        bodyScripts: ""
     }
 };
