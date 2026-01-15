@@ -40,6 +40,12 @@ const EfficiencyCTA: React.FC<EfficiencyCTAProps> = ({ config }) => {
                 {config.subtitle}
               </p>
             )}
+            <div className="mt-8">
+              <a href="#contato" className="bg-primary text-navy-blue px-8 py-4 rounded-xl font-black uppercase tracking-widest text-sm hover:brightness-110 transition-all shadow-xl shadow-primary/20 flex items-center gap-2 w-fit">
+                <span className="material-symbols-outlined fill-1">chat_bubble</span>
+                Fale Conosco
+              </a>
+            </div>
           </div>
         </div>
       </div>
