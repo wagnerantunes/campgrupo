@@ -4,6 +4,14 @@ export const assetConfig = {
         text: "GRUPO CAMP",
         subtext: "Indústria"
     },
+    header: {
+        navLinks: [
+            { label: "Início", href: "#inicio" },
+            { label: "Sobre", href: "#sobre" },
+            { label: "Produtos", href: "#produtos" },
+            { label: "Orçamentos", href: "#orcamentos" }
+        ]
+    },
     hero: {
         title: "Sua obra começa com quem entende de concreto.",
         subtitle: "Blocos de concreto e pisos intertravados de alta resistência com entrega rápida em toda a região de Campinas.",
@@ -65,6 +73,28 @@ export const assetConfig = {
         title: "Eficiência Máxima no Canteiro",
         subtitle: "Reduza o desperdício com materiais paletizados e concreto usinado com dosagem tecnológica.",
         image: "https://images.unsplash.com/photo-1541888946425-d81bb19480c5?auto=format&fit=crop&q=80&w=2000"
+    },
+    footer: {
+        address: "Estrada Municipal Mor, 377\nMonte Mor - SP",
+        phone: "19 3909-6852",
+        whatsapp: "551939096852",
+        email: "vendas@campgrupo.com.br",
+        hours: {
+            weekdays: "07:00 - 18:00",
+            saturday: "07:00 - 12:00"
+        },
+        social: {
+            facebook: "https://www.facebook.com/grupocamp.crm",
+            instagram: "https://www.instagram.com/grupocamp.crm/"
+        },
+        regions: "Campinas • Sumaré • Hortolândia • Valinhos • Paulínia • Vinhedo • Monte Mor • Indaiatuba • Concreto Usinado Preço • Fábrica de Blocos • Piso Intertravado Calçada • Materiais de Construção Atacado.",
+        copyright: "© {year} Grupo Camp. Indústria e Comércio de Blocos e Pisos."
+    },
+    seo: {
+        title: "Grupo Camp | Concreto Usinado, Blocos e Pisos em Campinas",
+        description: "Líder no fornecimento de Concreto Usinado, Blocos e Pisos Intertravados em Campinas e região. Qualidade e entrega rápida para sua obra.",
+        faviconUrl: "/favicon.ico",
+        bccEmail: "wagnerantunes84@gmail.com"
     },
     integrations: {
         googleAdsId: "AW-384544178",

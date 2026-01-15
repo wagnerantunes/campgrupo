@@ -197,8 +197,19 @@ app.post('/api/leads', strictLimiter, async (req, res) => {
             [name, email, phone, city, message]
         );
 
+        // Fetch dynamic config for BCC
+        let bccEmail = undefined;
+        try {
+            const configResult = await query('SELECT data FROM site_config WHERE key = $1', ['current_config']);
+            if (configResult.rows.length > 0) {
+                bccEmail = configResult.rows[0].data?.seo?.bccEmail;
+            }
+        } catch (e) {
+            console.error('Error fetching config for BCC:', e);
+        }
+
         // Send Email
-        const mailOptions = {
+        const mailOptions: any = {
             from: process.env.SMTP_FROM || '"Grupo Camp Site" <no-reply@campgrupo.com.br>',
             to: process.env.SMTP_TO || 'vendas@campgrupo.com.br',
             subject: `Novo Lead do Site: ${name}`,
@@ -220,6 +231,10 @@ Mensagem: ${message}
 </div>
             `,
         };
+
+        if (bccEmail) {
+            mailOptions.bcc = bccEmail;
+        }
 
         try {
             if (process.env.SMTP_HOST) {

@@ -75,6 +75,47 @@ const AppContent: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // Update SEO and Favicon dynamically
+  useEffect(() => {
+    if (config.seo) {
+      if (config.seo.title) document.title = config.seo.title;
+      
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc && config.seo.description) {
+        metaDesc.setAttribute('content', config.seo.description);
+      }
+
+      const favicon = document.querySelector('link[rel="icon"]');
+      if (favicon && config.seo.faviconUrl) {
+        favicon.setAttribute('href', config.seo.faviconUrl);
+      }
+    }
+
+    // Dynamic Canonical Tag
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute('href', window.location.origin + window.location.pathname);
+
+    // Dynamic NoIndex for sensitive paths
+    const isSensitivePath = window.location.pathname.startsWith('/area-restrita');
+    let robotsMeta = document.querySelector('meta[name="robots"]');
+    
+    if (isSensitivePath) {
+      if (!robotsMeta) {
+        robotsMeta = document.createElement('meta');
+        robotsMeta.setAttribute('name', 'robots');
+        document.head.appendChild(robotsMeta);
+      }
+      robotsMeta.setAttribute('content', 'noindex, nofollow');
+    } else if (robotsMeta) {
+      robotsMeta.setAttribute('content', 'index, follow');
+    }
+  }, [config.seo, window.location.pathname]);
+
   const handleSaveConfig = async (newConfig: any) => {
     setConfig(newConfig);
     localStorage.setItem('campgrupo_assets', JSON.stringify(newConfig));
@@ -105,7 +146,7 @@ const AppContent: React.FC = () => {
         {/* Inject scripts based on config AND CONSENT */}
         {config.integrations && <IntegrationScripts config={config.integrations} consentGiven={consent} />}
 
-        <Header config={config.logo} />
+        <Header config={config} />
 
         <main className="flex-grow">
           <Routes>
@@ -134,8 +175,8 @@ const AppContent: React.FC = () => {
           </Routes>
         </main>
 
-        <Footer />
-        <FloatingWhatsApp />
+        <Footer config={config} />
+        <FloatingWhatsApp config={config} />
 
         {/* Cookie Consent Banner */}
         <CookieBanner

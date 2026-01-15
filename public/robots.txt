@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /area-restrita
+Disallow: /admin
+Disallow: /api/
+Disallow: /uploads/
+
+Sitemap: https://campgrupo.com.br/sitemap.xml

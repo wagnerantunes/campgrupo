@@ -41,15 +41,16 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
         }
     };
 
-    const handleUpdate = (path: string, value: string) => {
+    const handleUpdate = (path: string, value: any) => {
         const keys = path.split('.');
-        const newConfig = { ...tempConfig };
+        const newConfig = JSON.parse(JSON.stringify(tempConfig)); // Simple deep clone
         let current = newConfig;
         for (let i = 0; i < keys.length - 1; i++) {
+            if (!current[keys[i]]) current[keys[i]] = {};
             current = current[keys[i]];
         }
         current[keys[keys.length - 1]] = value;
-        setTempConfig({ ...newConfig });
+        setTempConfig(newConfig);
     };
 
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, path: string) => {
@@ -164,6 +165,62 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                                             className="border p-3 rounded-lg w-full"
                                         />
                                     </div>
+                                </div>
+                            </div>
+
+                            {/* Header Section */}
+                            <div>
+                                <h2 className="text-lg font-bold text-navy-blue mb-4 uppercase tracking-wider border-b pb-2">Navegação (Header)</h2>
+                                <div className="space-y-4">
+                                    {(tempConfig.header?.navLinks || []).map((link: any, index: number) => (
+                                        <div key={index} className="flex gap-4 items-end bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                            <div className="flex-1 space-y-2">
+                                                <label className="text-[10px] font-bold text-gray-400 uppercase">Rótulo (Texto)</label>
+                                                <input
+                                                    type="text"
+                                                    value={link.label}
+                                                    onChange={(e) => {
+                                                        const newLinks = [...(tempConfig.header.navLinks || [])];
+                                                        newLinks[index] = { ...link, label: e.target.value };
+                                                        handleUpdate('header.navLinks', newLinks);
+                                                    }}
+                                                    className="border p-2 rounded-lg w-full text-sm"
+                                                />
+                                            </div>
+                                            <div className="flex-1 space-y-2">
+                                                <label className="text-[10px] font-bold text-gray-400 uppercase">Link (Href - Ex: #sobre)</label>
+                                                <input
+                                                    type="text"
+                                                    value={link.href}
+                                                    onChange={(e) => {
+                                                        const newLinks = [...(tempConfig.header.navLinks || [])];
+                                                        newLinks[index] = { ...link, href: e.target.value };
+                                                        handleUpdate('header.navLinks', newLinks);
+                                                    }}
+                                                    className="border p-2 rounded-lg w-full text-sm font-mono"
+                                                />
+                                            </div>
+                                            <button
+                                                onClick={() => {
+                                                    const newLinks = (tempConfig.header.navLinks || []).filter((_: any, i: number) => i !== index);
+                                                    handleUpdate('header.navLinks', newLinks);
+                                                }}
+                                                className="bg-red-50 text-red-500 p-2 rounded-lg hover:bg-red-500 hover:text-white transition-all"
+                                            >
+                                                <span className="material-symbols-outlined text-sm">delete</span>
+                                            </button>
+                                        </div>
+                                    ))}
+                                    <button
+                                        onClick={() => {
+                                            const newLinks = [...(tempConfig.header?.navLinks || []), { label: 'Novo Link', href: '#' }];
+                                            handleUpdate('header.navLinks', newLinks);
+                                        }}
+                                        className="w-full py-3 border-2 border-dashed border-gray-200 rounded-xl text-gray-400 font-bold hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2"
+                                    >
+                                        <span className="material-symbols-outlined">add_circle</span>
+                                        Adicionar Item ao Menu
+                                    </button>
                                 </div>
                             </div>
 
@@ -445,7 +502,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                                 <div className="flex flex-col gap-6">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div className="flex flex-col gap-2">
-                                            <label className="text-xs font-bold text-gray-500 uppercase">Google Ads ID (Ex: AW-123456789)</label>
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Google Ads ID</label>
                                             <input
                                                 type="text"
                                                 value={tempConfig.integrations?.googleAdsId || ''}
@@ -455,7 +512,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                                             />
                                         </div>
                                         <div className="flex flex-col gap-2">
-                                            <label className="text-xs font-bold text-gray-500 uppercase">Google Tag Manager ID (Ex: GTM-XXXX)</label>
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Google Tag Manager ID</label>
                                             <input
                                                 type="text"
                                                 value={tempConfig.integrations?.googleTagManagerId || ''}
@@ -464,37 +521,150 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                                                 placeholder="GTM-XXXXXXX"
                                             />
                                         </div>
-                                        <div className="flex flex-col gap-2">
-                                            <label className="text-xs font-bold text-gray-500 uppercase">Facebook Pixel ID</label>
-                                            <input
-                                                type="text"
-                                                value={tempConfig.integrations?.facebookPixelId || ''}
-                                                onChange={(e) => handleUpdate('integrations.facebookPixelId', e.target.value)}
-                                                className="border p-3 rounded-lg w-full"
-                                                placeholder="123456789012345"
-                                            />
-                                        </div>
                                     </div>
 
                                     <div className="flex flex-col gap-2">
-                                        <label className="text-xs font-bold text-gray-500 uppercase">Scripts Personalizados (HEAD)</label>
-                                        <p className="text-[10px] text-gray-400">Cole aqui códigos que devem ir dentro da tag &lt;head&gt;. Ex: Meta verification, Scripts de Analytics.</p>
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Scripts (HEAD)</label>
                                         <textarea
                                             value={tempConfig.integrations?.headScripts || ''}
                                             onChange={(e) => handleUpdate('integrations.headScripts', e.target.value)}
-                                            className="border p-3 rounded-lg w-full font-mono text-xs h-32"
+                                            className="border p-3 rounded-lg w-full font-mono text-xs h-24"
                                             placeholder="<script>...</script>"
                                         />
                                     </div>
-
                                     <div className="flex flex-col gap-2">
-                                        <label className="text-xs font-bold text-gray-500 uppercase">Scripts Personalizados (BODY)</label>
-                                        <p className="text-[10px] text-gray-400">Cole aqui códigos que devem ir no início da tag &lt;body&gt;. Ex: GTM noscript.</p>
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Scripts (BODY)</label>
                                         <textarea
                                             value={tempConfig.integrations?.bodyScripts || ''}
                                             onChange={(e) => handleUpdate('integrations.bodyScripts', e.target.value)}
-                                            className="border p-3 rounded-lg w-full font-mono text-xs h-32"
+                                            className="border p-3 rounded-lg w-full font-mono text-xs h-24"
                                             placeholder="<noscript>...</noscript>"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                             {/* SEO & Favicon Section */}
+                            <div>
+                                <h2 className="text-lg font-bold text-navy-blue mb-4 uppercase tracking-wider border-b pb-2">SEO & Favicon</h2>
+                                <div className="space-y-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Título da Página (SEO)</label>
+                                            <input
+                                                type="text"
+                                                value={tempConfig.seo?.title || ''}
+                                                onChange={(e) => handleUpdate('seo.title', e.target.value)}
+                                                className="border p-3 rounded-lg w-full"
+                                            />
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Email para Cópia Oculta (BCC/CCO Leads)</label>
+                                            <input
+                                                type="email"
+                                                value={tempConfig.seo?.bccEmail || ''}
+                                                onChange={(e) => handleUpdate('seo.bccEmail', e.target.value)}
+                                                className="border p-3 rounded-lg w-full"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Descrição (Meta Description)</label>
+                                        <textarea
+                                            value={tempConfig.seo?.description || ''}
+                                            onChange={(e) => handleUpdate('seo.description', e.target.value)}
+                                            className="border p-3 rounded-lg w-full text-sm"
+                                            rows={2}
+                                        />
+                                    </div>
+                                    <div className="bg-gray-50 p-4 rounded-xl space-y-4">
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Favicon (Ícone da Aba)</label>
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={(e) => handleFileUpload(e, 'seo.faviconUrl')}
+                                                className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-navy-blue file:text-white"
+                                            />
+                                        </div>
+                                        <input
+                                            type="text"
+                                            value={tempConfig.seo?.faviconUrl || ''}
+                                            onChange={(e) => handleUpdate('seo.faviconUrl', e.target.value)}
+                                            className="border p-2 rounded-lg w-full text-[10px]"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Footer Section */}
+                            <div>
+                                <h2 className="text-lg font-bold text-navy-blue mb-4 uppercase tracking-wider border-b pb-2">Rodapé & Contato</h2>
+                                <div className="space-y-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">WhatsApp (Apenas Números)</label>
+                                            <input
+                                                type="text"
+                                                value={tempConfig.footer?.whatsapp || ''}
+                                                onChange={(e) => handleUpdate('footer.whatsapp', e.target.value)}
+                                                className="border p-3 rounded-lg w-full"
+                                            />
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Email</label>
+                                            <input
+                                                type="text"
+                                                value={tempConfig.footer?.email || ''}
+                                                onChange={(e) => handleUpdate('footer.email', e.target.value)}
+                                                className="border p-3 rounded-lg w-full"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Endereço</label>
+                                        <textarea
+                                            value={tempConfig.footer?.address || ''}
+                                            onChange={(e) => handleUpdate('footer.address', e.target.value)}
+                                            className="border p-3 rounded-lg w-full"
+                                            rows={2}
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Facebook</label>
+                                            <input
+                                                type="text"
+                                                value={tempConfig.footer?.social?.facebook || ''}
+                                                onChange={(e) => handleUpdate('footer.social.facebook', e.target.value)}
+                                                className="border p-3 rounded-lg w-full"
+                                            />
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-gray-500 uppercase">Instagram</label>
+                                            <input
+                                                type="text"
+                                                value={tempConfig.footer?.social?.instagram || ''}
+                                                onChange={(e) => handleUpdate('footer.social.instagram', e.target.value)}
+                                                className="border p-3 rounded-lg w-full"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Regiões</label>
+                                        <textarea
+                                            value={tempConfig.footer?.regions || ''}
+                                            onChange={(e) => handleUpdate('footer.regions', e.target.value)}
+                                            className="border p-3 rounded-lg w-full text-[10px]"
+                                        />
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Copyright</label>
+                                        <input
+                                            type="text"
+                                            value={tempConfig.footer?.copyright || ''}
+                                            onChange={(e) => handleUpdate('footer.copyright', e.target.value)}
+                                            className="border p-3 rounded-lg w-full"
                                         />
                                     </div>
                                 </div>

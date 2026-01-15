@@ -1,9 +1,26 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+  
+  # Redirect common hacked URL patterns to 410 (Gone)
+  RewriteCond %{REQUEST_URI} \.(php|asp|aspx|jsp|cgi)$ [NC,OR]
+  RewriteCond %{REQUEST_URI} ^/(wp-admin|wp-content|wp-includes|wp-json|wp-load|wp-login|xmlrpc) [NC,OR]
+  RewriteCond %{REQUEST_URI} ^/(v1|v2|api|vendor|node_modules|config|storage|logs) [NC,OR]
+  RewriteCond %{REQUEST_URI} /(eval|base64|shell|cmd|passthru|system|exec|include|require) [NC]
+  RewriteRule ^(.*)$ - [G,L]
+
+  # SPA Routing
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_FILENAME} !-l
   RewriteRule . /index.html [L]
+</IfModule>
+
+# Basic Security Headers
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set X-XSS-Protection "1; mode=block"
+  Header set Referrer-Policy "no-referrer-when-downgrade"
 </IfModule>
