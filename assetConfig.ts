@@ -82,8 +82,9 @@ export const assetConfig = {
         whatsapp: "551939096852",
         email: "vendas@campgrupo.com.br",
         hours: {
-            weekdays: "07:00 - 18:00",
-            saturday: "07:00 - 12:00"
+            monThu: "07:00 - 17:00",
+            friday: "07:00 - 16:00",
+            weekend: "Fechado"
         },
         social: {
             facebook: "https://www.facebook.com/grupocamp.crm",

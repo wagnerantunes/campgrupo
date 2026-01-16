@@ -79,8 +79,9 @@ const Footer: React.FC<FooterProps> = ({ config }) => {
         <div className="flex flex-col gap-6">
           <h4 className="text-lg font-black border-b border-primary/30 pb-2 inline-block self-start">Horário</h4>
           <div className="flex flex-col gap-2 text-blue-100/60 text-sm">
-            <p className="flex justify-between gap-4"><span>Seg - Sex:</span> <span className="text-white font-bold">{footer.hours?.weekdays}</span></p>
-            <p className="flex justify-between gap-4"><span>Sáb:</span> <span className="text-white font-bold">{footer.hours?.saturday}</span></p>
+            <p className="flex justify-between gap-4"><span>Seg - Qui:</span> <span className="text-white font-bold">{footer.hours?.monThu}</span></p>
+            <p className="flex justify-between gap-4"><span>Sex:</span> <span className="text-white font-bold">{footer.hours?.friday}</span></p>
+            <p className="flex justify-between gap-4"><span>Sáb. e Dom.:</span> <span className="text-white font-bold">{footer.hours?.weekend}</span></p>
             <a 
               href={`https://wa.me/${footer.whatsapp}?text=Ol%C3%A1%2C%20vim%20atraves%20do%20site%20e%20gostaria%20de%20um%20or%C3%A7amento%20por%20favor`}
               target="_blank"
