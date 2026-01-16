@@ -13,6 +13,14 @@ const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ config }) => {
       href={`https://wa.me/${whatsapp}?text=Ol%C3%A1%2C%20vim%20atraves%20do%20site%20e%20gostaria%20de%20um%20or%C3%A7amento%20por%20favor`}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={() => {
+        if ((window as any).trackConversion) {
+          (window as any).trackConversion('Contact', {
+            method: 'WhatsApp',
+            location: 'floating_button'
+          });
+        }
+      }}
       className="fixed bottom-8 right-8 z-[100] bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center group"
       aria-label="Falar com um especialista no WhatsApp"
     >

@@ -32,6 +32,14 @@ const ContactSection: React.FC = () => {
         });
 
         if (response.ok) {
+            // Trigger conversion event
+            if ((window as any).trackConversion) {
+                (window as any).trackConversion('generate_lead', {
+                    category: 'contact_form',
+                    label: 'home_page'
+                });
+            }
+            
             toast.success('Mensagem enviada com sucesso!', { id: toastId });
             setFormData({ name: '', phone: '', message: '' });
             navigate('/obrigado');

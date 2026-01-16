@@ -50,6 +50,14 @@ const Header: React.FC<HeaderProps> = ({ config }) => {
             href={`https://wa.me/${footer?.whatsapp}?text=Ol%C3%A1%2C%20vim%20atraves%20do%20site%20e%20gostaria%20de%20um%20or%C3%A7amento%20por%20favor`}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => {
+              if ((window as any).trackConversion) {
+                (window as any).trackConversion('Contact', {
+                  method: 'WhatsApp',
+                  location: 'header_desktop'
+                });
+              }
+            }}
             className="flex items-center gap-2 bg-primary text-navy-blue px-6 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-lg shadow-primary/10"
           >
             <span className="material-symbols-outlined text-lg fill-1">chat_bubble</span>
@@ -91,6 +99,14 @@ const Header: React.FC<HeaderProps> = ({ config }) => {
             href={`https://wa.me/${footer?.whatsapp}?text=Ol%C3%A1%2C%20vim%20atraves%20do%20site%20e%20gostaria%20de%20um%20or%C3%A7amento%20por%20favor`}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => {
+              if ((window as any).trackConversion) {
+                (window as any).trackConversion('Contact', {
+                  method: 'WhatsApp',
+                  location: 'header_mobile'
+                });
+              }
+            }}
             className="mt-4 bg-primary text-navy-blue px-10 py-4 rounded-xl font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-xl shadow-primary/20 flex items-center gap-3"
           >
             <span className="material-symbols-outlined text-2xl fill-1">chat_bubble</span>

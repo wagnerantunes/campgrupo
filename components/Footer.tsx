@@ -65,7 +65,18 @@ const Footer: React.FC<FooterProps> = ({ config }) => {
             </p>
             <p className="flex items-center gap-3">
               <span className="material-symbols-outlined text-primary fill-1">phone</span>
-               <a href={`tel:${footer.phone.replace(/\D/g, '')}`} className="hover:text-primary transition-colors">
+               <a 
+                 href={`tel:${footer.phone.replace(/\D/g, '')}`} 
+                 className="hover:text-primary transition-colors"
+                 onClick={() => {
+                   if ((window as any).trackConversion) {
+                     (window as any).trackConversion('Contact', {
+                       method: 'Phone',
+                       location: 'footer'
+                     });
+                   }
+                 }}
+               >
                   {footer.phone}
                </a>
             </p>
@@ -86,6 +97,14 @@ const Footer: React.FC<FooterProps> = ({ config }) => {
               href={`https://wa.me/${footer.whatsapp}?text=Ol%C3%A1%2C%20vim%20atraves%20do%20site%20e%20gostaria%20de%20um%20or%C3%A7amento%20por%20favor`}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => {
+                if ((window as any).trackConversion) {
+                  (window as any).trackConversion('Contact', {
+                    method: 'WhatsApp',
+                    location: 'footer_button'
+                  });
+                }
+              }}
               className="mt-4 bg-primary text-navy-blue py-3 rounded-lg font-black text-sm hover:brightness-110 transition-all uppercase tracking-widest shadow-lg shadow-primary/10 text-center"
             >
               WhatsApp Direto

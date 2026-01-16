@@ -5,6 +5,13 @@ const ThankYou: React.FC = () => {
   useEffect(() => {
     // Scroll to top when component mounts
     window.scrollTo(0, 0);
+
+    // Safety fallback for conversion tracking
+    if ((window as any).trackConversion) {
+        (window as any).trackConversion('Lead', {
+            page: 'thank_you'
+        });
+    }
   }, []);
 
   return (

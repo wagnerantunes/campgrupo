@@ -90,6 +90,21 @@ const IntegrationScripts: React.FC<IntegrationScriptsProps> = ({ config, consent
             } catch(e) { console.error("Error injecting custom body scripts", e) }
         }
 
+        // 6. Global Helper for Conversion Tracking
+        (window as any).trackConversion = (eventName: string, params?: any) => {
+            if (!consentGiven) return;
+            
+            // Google Ads / Analytics
+            if (typeof (window as any).gtag === 'function') {
+                (window as any).gtag('event', eventName, params);
+            }
+
+            // Facebook Pixel
+            if (typeof (window as any).fbq === 'function') {
+                (window as any).fbq('track', eventName, params);
+            }
+        };
+
     }, [config, consentGiven]); 
 
     return null;
