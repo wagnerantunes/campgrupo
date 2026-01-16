@@ -63,10 +63,10 @@ const AppContent: React.FC = () => {
     fetchConfig();
   }, []);
 
-  // Atalho Shift + A para acessar o admin de forma discreta
+  // Atalho Control + Alt + Shift + A para acessar o admin de forma discreta
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.shiftKey && e.key.toUpperCase() === 'A') {
+      if (e.ctrlKey && e.altKey && e.shiftKey && e.key.toUpperCase() === 'A') {
         window.location.href = '/area-restrita';
       }
     };
@@ -79,7 +79,7 @@ const AppContent: React.FC = () => {
   useEffect(() => {
     if (config.seo) {
       if (config.seo.title) document.title = config.seo.title;
-      
+
       const metaDesc = document.querySelector('meta[name="description"]');
       if (metaDesc && config.seo.description) {
         metaDesc.setAttribute('content', config.seo.description);
@@ -103,7 +103,7 @@ const AppContent: React.FC = () => {
     // Dynamic NoIndex for sensitive paths
     const isSensitivePath = window.location.pathname.startsWith('/area-restrita');
     let robotsMeta = document.querySelector('meta[name="robots"]');
-    
+
     if (isSensitivePath) {
       if (!robotsMeta) {
         robotsMeta = document.createElement('meta');
@@ -129,7 +129,7 @@ const AppContent: React.FC = () => {
         },
         body: JSON.stringify(newConfig)
       });
-      
+
       if (!response.ok) {
         throw new Error('Falha ao salvar no servidor');
       }
