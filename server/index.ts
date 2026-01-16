@@ -214,10 +214,10 @@ const authenticateToken = (req: any, res: any, next: any) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
-    if (!token) return res.sendStatus(401);
+    if (!token) return res.status(401).json({ message: 'Token de autenticação ausente' });
 
     jwt.verify(token, JWT_SECRET, (err: any, user: any) => {
-        if (err) return res.sendStatus(403);
+        if (err) return res.status(403).json({ message: 'Sessão expirada ou inválida. Faça login novamente.' });
         req.user = user;
         next();
     });

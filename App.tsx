@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
-import AdminPanel from './components/AdminPanel';
+import AdminPanel from './components/AdminPanelSupabase';
 import LoginModal from './components/LoginModal';
 import Home from './components/Home';
 import ThankYou from './components/ThankYou';
@@ -29,19 +29,26 @@ const AppContent: React.FC = () => {
   useEffect(() => {
     const fetchConfig = async () => {
       try {
-        const response = await fetch(`${API_URL}/config`);
-        if (response.ok) {
-          const data = await response.json();
+        const { supabase } = await import('./lib/supabase');
+        const { data, error } = await supabase
+          .from('site_config')
+          .select('data')
+          .eq('key', 'current_config')
+          .single();
+
+        if (error) throw error;
+
+        if (data?.data) {
           setConfig({
             ...initialConfig,
-            ...data,
-            products: data.products ? initialConfig.products.map((p: any, i: number) => ({ ...p, ...data.products[i] })) : initialConfig.products,
-            supplies: data.supplies ? initialConfig.supplies.map((s: any, i: number) => ({ ...s, ...data.supplies[i] })) : initialConfig.supplies
+            ...data.data,
+            products: data.data.products ? initialConfig.products.map((p: any, i: number) => ({ ...p, ...data.data.products[i] })) : initialConfig.products,
+            supplies: data.data.supplies ? initialConfig.supplies.map((s: any, i: number) => ({ ...s, ...data.data.supplies[i] })) : initialConfig.supplies
           });
           return;
         }
       } catch (e) {
-        console.warn("Backend não alcançado, tentando localStorage", e);
+        console.warn("Erro ao carregar config do Supabase, usando fallback", e);
       }
 
       const saved = localStorage.getItem('campgrupo_assets');

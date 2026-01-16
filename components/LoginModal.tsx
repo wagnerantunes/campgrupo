@@ -19,25 +19,21 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose, onSuccess }) => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_URL}/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
+      const { supabase } = await import('../lib/supabase');
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: username,
+        password,
       });
 
-      const data = await response.json();
+      if (error) throw error;
 
-      if (response.ok) {
-        login(data.token, data.username);
-        toast.success(`Bem-vindo, ${data.username}!`);
+      if (data.session) {
+        login(data.session.access_token, data.user?.email || 'admin');
+        toast.success(`Bem-vindo!`);
         onSuccess();
-      } else {
-        toast.error(data.message || 'Erro ao fazer login');
       }
-    } catch (error) {
-      toast.error('Erro de conexão com o servidor');
+    } catch (error: any) {
+      toast.error(error.message || 'Erro ao fazer login');
       console.error(error);
     } finally {
       setLoading(false);

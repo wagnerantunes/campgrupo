@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
-export const UPLOAD_URL = import.meta.env.VITE_UPLOAD_URL || 'http://localhost:3001/uploads';
+const API_URL = '/api';
+export const UPLOAD_URL = '/uploads';
 
 export default API_URL;

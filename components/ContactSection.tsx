@@ -23,32 +23,32 @@ const ContactSection: React.FC = () => {
     const toastId = toast.loading('Enviando mensagem...');
 
     try {
-        const response = await fetch(`${API_URL}/leads`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        });
+        const { supabase } = await import('../lib/supabase');
+        const { error } = await supabase
+            .from('leads')
+            .insert([{
+                name: formData.name,
+                phone: formData.phone,
+                message: formData.message,
+                created_at: new Date().toISOString()
+            }]);
 
-        if (response.ok) {
-            // Trigger conversion event
-            if ((window as any).trackConversion) {
-                (window as any).trackConversion('generate_lead', {
-                    category: 'contact_form',
-                    label: 'home_page'
-                });
-            }
-            
-            toast.success('Mensagem enviada com sucesso!', { id: toastId });
-            setFormData({ name: '', phone: '', message: '' });
-            navigate('/obrigado');
-        } else {
-            toast.error('Erro ao enviar. Tente novamente.', { id: toastId });
+        if (error) throw error;
+
+        // Trigger conversion event
+        if ((window as any).trackConversion) {
+            (window as any).trackConversion('generate_lead', {
+                category: 'contact_form',
+                label: 'home_page'
+            });
         }
+        
+        toast.success('Mensagem enviada com sucesso!', { id: toastId });
+        setFormData({ name: '', phone: '', message: '' });
+        navigate('/obrigado');
     } catch (error) {
         console.error(error);
-        toast.error('Erro de conexão.', { id: toastId });
+        toast.error('Erro ao enviar. Tente novamente.', { id: toastId });
     } finally {
         setLoading(false);
     }
