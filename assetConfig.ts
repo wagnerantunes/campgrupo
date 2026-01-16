@@ -73,7 +73,7 @@ export const assetConfig = {
     cta: {
         title: "Eficiência Máxima no Canteiro",
         subtitle: "Reduza o desperdício com materiais paletizados e concreto usinado com dosagem tecnológica.",
-        image: "https://images.unsplash.com/photo-1541888946425-d81bb19480c5?auto=format&fit=crop&q=80&w=2000"
+        image: "https://api.campgrupo.com.br/uploads/logo-colorido.webp"
     },
     footer: {
         logo: "https://api.campgrupo.com.br/uploads/logo-claro.webp",
