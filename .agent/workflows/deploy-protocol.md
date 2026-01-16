@@ -1,6 +1,17 @@
 # 🚀 PROTOCOLO DE DEPLOY - CAMPGRUPO
 
-## Checklist Completo para Deploy sem Falhas
+## 🏗️ ARQUITETURA DO PROJETO
+
+- **Frontend**: Hospedado na **Hostinger Cloud**.
+- **API (Backend)**: Hospedado na **VPS** (IP: `72.60.139.82`).
+- **Banco de Dados**: Hospedado no **Supabase** (PostgreSQL).
+
+## 🚀 MECANISMO DE DEPLOY
+
+- **Frontend**: **DEPLOY AUTOMÁTICO**. Basta fazer o `git push origin main`. A Hostinger Cloud identifica a mudança no repositório e puxa/atualiza os arquivos sozinha. Não é necessário build manual ou upload via FTP para o frontend.
+- **Backend**: Deploy manual ou via script na VPS (conforme instruções abaixo).
+
+---
 
 ### ✅ PRÉ-DEPLOY (Local)
 
