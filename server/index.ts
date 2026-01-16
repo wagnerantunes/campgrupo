@@ -68,7 +68,6 @@ const allowedOrigins = [
 
 app.use(helmet({
     contentSecurityPolicy: false, // Usaremos o meta tag no index.html e headers do Nginx para controle granular
-    crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 
 // Rate Limiting general
@@ -121,11 +120,25 @@ const upload = multer({
     storage: storage,
     limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
     fileFilter: (req, file, cb) => {
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml', 'image/x-icon', 'image/vnd.microsoft.icon'];
-        if (allowedTypes.includes(file.mimetype)) {
+        const allowedTypes = [
+            'image/jpeg', 
+            'image/png', 
+            'image/gif', 
+            'image/webp', 
+            'image/svg+xml', 
+            'image/x-icon', 
+            'image/vnd.microsoft.icon',
+            'application/xml', // Sometimes SVGs are detected as this
+            'text/xml'
+        ];
+        
+        console.log(`[Upload Attempt] Filename: ${file.originalname}, Mimetype: ${file.mimetype}`);
+        
+        if (allowedTypes.includes(file.mimetype) || file.originalname.toLowerCase().endsWith('.svg') || file.originalname.toLowerCase().endsWith('.webp')) {
             cb(null, true);
         } else {
-            cb(new Error('Tipo de arquivo não suportado. Use JPG, PNG, GIF, WEBP ou SVG.'));
+            console.warn(`[Upload Rejected] Unsupported type: ${file.mimetype}`);
+            cb(new Error(`Tipo de arquivo não suportado (${file.mimetype}). Use JPG, PNG, GIF, WEBP ou SVG.`));
         }
     }
 });

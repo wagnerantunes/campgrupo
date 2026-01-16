@@ -3,7 +3,7 @@ export const assetConfig = {
         icon: "foundation",
         text: "GRUPO CAMP",
         subtext: "Indústria",
-        logoUrl: ""
+        logoUrl: "/uploads/logo-colorido.svg"
     },
     header: {
         navLinks: [
@@ -128,7 +128,7 @@ export const assetConfig = {
     seo: {
         title: "Grupo Camp | Concreto Usinado, Blocos e Pisos em Campinas",
         description: "Líder no fornecimento de Concreto Usinado, Blocos e Pisos Intertravados em Campinas e região. Qualidade e entrega rápida para sua obra.",
-        faviconUrl: "/favicon.ico",
+        faviconUrl: "/uploads/favicon.svg",
         bccEmail: "wagnerantunes84@gmail.com"
     },
     integrations: {
