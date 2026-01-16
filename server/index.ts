@@ -67,7 +67,9 @@ const allowedOrigins = [
 ];
 
 app.use(helmet({
-    contentSecurityPolicy: false, // Usaremos o meta tag no index.html e headers do Nginx para controle granular
+    contentSecurityPolicy: false,
+    // @ts-ignore - types are outdated but this is valid for helmet 7+
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
 }));
 
 // Rate Limiting general
@@ -365,6 +367,7 @@ app.post('/api/config', authenticateToken, async (req, res) => {
 });
 
 app.post('/api/upload', authenticateToken, (req, res) => {
+    console.log('--- REQUISIÇÃO DE UPLOAD RECEBIDA NO BACKEND ---');
     upload.single('image')(req, res, (err) => {
         if (err instanceof multer.MulterError) {
             console.error('Multer Error:', err);

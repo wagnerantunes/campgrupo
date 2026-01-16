@@ -34,14 +34,22 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
 
     const fetchLeads = async () => {
         setLoadingLeads(true);
+        console.log('[Admin] Buscando leads...');
         try {
             const response = await fetch(`${API_URL}/leads`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-            if (response.ok) setLeads(await response.json());
+            if (response.ok) {
+                const data = await response.json();
+                console.log(`[Admin] ${data.length} leads carregados.`);
+                setLeads(data);
+            } else {
+                console.error(`[Admin Error] Falha ao buscar leads (${response.status})`);
+                toast.error(`Erro ao carregar leads: Código ${response.status}`);
+            }
         } catch (error) {
-            console.error(error);
-            toast.error('Erro ao carregar leads');
+            console.error('[Admin Exception] Erro na requisição de leads:', error);
+            toast.error(`Erro de conexão ao carregar leads: ${(error as Error).message}`);
         } finally {
             setLoadingLeads(false);
         }
@@ -49,14 +57,22 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
 
     const fetchMedia = async () => {
         setLoadingMedia(true);
+        console.log('[Admin] Buscando lista de mídias...');
         try {
             const response = await fetch(`${API_URL}/media`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-            if (response.ok) setMedia(await response.json());
+            if (response.ok) {
+                const data = await response.json();
+                console.log(`[Admin] ${data.length} arquivos de mídia encontrados.`);
+                setMedia(data);
+            } else {
+                console.error(`[Admin Error] Falha ao buscar mídias (${response.status})`);
+                toast.error(`Erro ao carregar mídias: Código ${response.status}`);
+            }
         } catch (error) {
-            console.error(error);
-            toast.error('Erro ao carregar mídia');
+            console.error('[Admin Exception] Erro na requisição de mídias:', error);
+            toast.error(`Erro de conexão ao carregar arquivos: ${(error as Error).message}`);
         } finally {
             setLoadingMedia(false);
         }
@@ -64,31 +80,47 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
 
     const deleteMedia = async (filename: string) => {
         if (!window.confirm('Excluir esta imagem permanentemente?')) return;
+        console.log(`[Admin] Excluindo mídia: ${filename}`);
         try {
             const response = await fetch(`${API_URL}/media/${filename}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (response.ok) {
+                console.log(`[Admin] Mídia ${filename} excluída.`);
                 toast.success('Arquivo excluído');
                 fetchMedia();
+            } else {
+                console.error(`[Admin Error] Falha ao excluir mídia (${response.status})`);
+                toast.error(`Erro ao excluir: Código ${response.status}`);
             }
-        } catch (error) { toast.error('Erro ao excluir'); }
+        } catch (error) { 
+            console.error('[Admin Exception] Erro na exclusão de mídia:', error);
+            toast.error('Erro ao excluir'); 
+        }
     };
 
     const deleteLead = async (id: number) => {
         if (!window.confirm('Excluir este lead permanentemente?')) return;
+        console.log(`[Admin] Excluindo lead ID: ${id}`);
         try {
             const response = await fetch(`${API_URL}/leads/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (response.ok) {
+                console.log(`[Admin] Lead ${id} excluído.`);
                 toast.success('Lead excluído');
                 fetchLeads();
+            } else {
+                console.error(`[Admin Error] Falha ao excluir lead (${response.status})`);
+                toast.error(`Erro ao excluir lead: Código ${response.status}`);
             }
-        } catch (error) { toast.error('Erro ao excluir'); }
-    }
+        } catch (error) { 
+            console.error('[Admin Exception] Erro na exclusão de lead:', error);
+            toast.error('Erro ao excluir'); 
+        }
+    };
 
     const handleUpdate = (path: string, value: any) => {
         const keys = path.split('.');
@@ -106,8 +138,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
         const file = event.target.files?.[0];
         if (!file) return;
 
+        console.log(`[Upload] Iniciando upload: ${file.name} (${file.type}, ${file.size} bytes)`);
         setUploading(true);
-        const loadingToast = toast.loading('Enviando imagem...');
+        const loadingToast = toast.loading(`Enviando ${file.name}...`);
         const formData = new FormData();
         formData.append('image', file);
 
@@ -119,29 +152,38 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                 },
                 body: formData,
             });
+            
             const data = await response.json();
+            
             if (response.ok && data.url) {
+                console.log(`[Upload Sucesso] Arquivo salvo em: ${data.url}`);
                 handleUpdate(path, data.url);
-                toast.success('Imagem atualizada!', { id: loadingToast });
+                toast.success(`Imagem ${file.name} atualizada!`, { id: loadingToast });
             } else {
-                toast.error(data.message || 'Erro no upload', { id: loadingToast });
+                console.error('[Upload Erro] Servidor retornou:', data);
+                const errorMsg = data.message || data.error || 'Erro desconhecido no servidor';
+                toast.error(`Falha no upload (${response.status}): ${errorMsg}`, { id: loadingToast, duration: 6000 });
             }
         } catch (error) {
-            console.error('Error uploading file:', error);
-            toast.error('Erro ao subir imagem', { id: loadingToast });
+            console.error('[Upload Exception] Falha na conexão:', error);
+            toast.error(`Erro crítico ao subir imagem: ${(error as Error).message}`, { id: loadingToast, duration: 6000 });
         } finally {
             setUploading(false);
+            if (event.target) event.target.value = '';
         }
     };
 
     const handleSave = async () => {
+        console.log('[Config] Tentando salvar nova configuração no banco...');
         const loadingToast = toast.loading('Salvando alterações...');
         try {
             await onSave(tempConfig);
+            console.log('[Config] Salvo com sucesso!');
             toast.success('Site atualizado com sucesso!', { id: loadingToast });
             onClose();
         } catch (error) {
-            toast.error('Erro ao salvar', { id: loadingToast });
+            console.error('[Config Error] Falha ao salvar:', error);
+            toast.error(`Erro ao salvar: ${(error as Error).message}`, { id: loadingToast, duration: 6000 });
         }
     };
 

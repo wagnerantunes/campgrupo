@@ -3,7 +3,7 @@ export const assetConfig = {
         icon: "foundation",
         text: "GRUPO CAMP",
         subtext: "Indústria",
-        logoUrl: "/uploads/logo-colorido.svg"
+        logoUrl: "https://api.campgrupo.com.br/uploads/logo-colorido.webp"
     },
     header: {
         navLinks: [
@@ -76,7 +76,7 @@ export const assetConfig = {
         image: "https://images.unsplash.com/photo-1541888946425-d81bb19480c5?auto=format&fit=crop&q=80&w=2000"
     },
     footer: {
-        logo: "/logo-footer.webp",
+        logo: "https://api.campgrupo.com.br/uploads/logo-claro.webp",
         address: "Estrada Municipal Mor, 377\nMonte Mor - SP",
         phone: "19 3909-6852",
         whatsapp: "551939096852",
@@ -94,7 +94,7 @@ export const assetConfig = {
         copyright: "© {year} Grupo Camp. Indústria e Comércio de Blocos e Pisos."
     },
     abcp: {
-        logo: "/abcp-logo.webp",
+        logo: "https://api.campgrupo.com.br/uploads/favicon.webp",
         title: "Compromisso com a Qualidade Técnica",
         description: "Nossos processos seguem rigorosamente os padrões da Associação Brasileira de Cimento Portland. Garantimos que cada material entregue atenda aos critérios de segurança e durabilidade exigidos pelas normas técnicas."
     },
@@ -128,7 +128,7 @@ export const assetConfig = {
     seo: {
         title: "Grupo Camp | Concreto Usinado, Blocos e Pisos em Campinas",
         description: "Líder no fornecimento de Concreto Usinado, Blocos e Pisos Intertravados em Campinas e região. Qualidade e entrega rápida para sua obra.",
-        faviconUrl: "/uploads/favicon.svg",
+        faviconUrl: "https://api.campgrupo.com.br/uploads/favicon.svg",
         bccEmail: "wagnerantunes84@gmail.com"
     },
     integrations: {
