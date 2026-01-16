@@ -39,8 +39,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (response.ok) setLeads(await response.json());
-        } catch (error) { 
-            console.error(error); 
+        } catch (error) {
+            console.error(error);
             toast.error('Erro ao carregar leads');
         } finally {
             setLoadingLeads(false);
@@ -54,7 +54,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (response.ok) setMedia(await response.json());
-        } catch (error) { 
+        } catch (error) {
             console.error(error);
             toast.error('Erro ao carregar mídia');
         } finally {
@@ -120,11 +120,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                 body: formData,
             });
             const data = await response.json();
-            if (data.url) {
+            if (response.ok && data.url) {
                 handleUpdate(path, data.url);
                 toast.success('Imagem atualizada!', { id: loadingToast });
             } else {
-                toast.error('Erro no upload', { id: loadingToast });
+                toast.error(data.message || 'Erro no upload', { id: loadingToast });
             }
         } catch (error) {
             console.error('Error uploading file:', error);
@@ -185,8 +185,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <button 
-                        onClick={handleLogout} 
+                    <button
+                        onClick={handleLogout}
                         className="flex items-center gap-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg text-sm font-bold text-red-200 hover:text-white transition-all border border-red-400/30"
                     >
                         <span className="material-symbols-outlined text-sm">logout</span>
@@ -519,41 +519,41 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                                                 />
                                             </div>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                                                    <div className="flex items-center gap-3">
-                                                        {p.image && (
-                                                            <div className="w-10 h-10 rounded border overflow-hidden bg-gray-200 shrink-0">
-                                                                <img src={p.image} alt="Mini" className="w-full h-full object-cover" />
-                                                            </div>
-                                                        )}
-                                                        <input
-                                                            type="file"
-                                                            accept="image/*"
-                                                            onChange={(e) => {
-                                                                const file = e.target.files?.[0];
-                                                                if (file) {
-                                                                    const path = `products.${i}.image`;
-                                                                    handleFileUpload(e, path);
-                                                                }
-                                                            }}
-                                                            className="text-[10px] file:mr-2 file:py-1 file:px-2 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:bg-primary file:text-navy-blue cursor-pointer"
-                                                        />
-                                                    </div>
-                                                    <div className="flex flex-col gap-1">
-                                                        <label className="text-[10px] font-bold text-gray-500 uppercase">URL ou Caminho</label>
-                                                        <input
-                                                            type="text"
-                                                            value={p.image}
-                                                            onChange={(e) => {
-                                                                const newProducts = [...tempConfig.products];
-                                                                newProducts[i].image = e.target.value;
-                                                                setTempConfig({ ...tempConfig, products: newProducts });
-                                                            }}
-                                                            className="border p-2 rounded-lg w-full text-xs"
-                                                        />
-                                                    </div>
+                                                <div className="flex items-center gap-3">
+                                                    {p.image && (
+                                                        <div className="w-10 h-10 rounded border overflow-hidden bg-gray-200 shrink-0">
+                                                            <img src={p.image} alt="Mini" className="w-full h-full object-cover" />
+                                                        </div>
+                                                    )}
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        onChange={(e) => {
+                                                            const file = e.target.files?.[0];
+                                                            if (file) {
+                                                                const path = `products.${i}.image`;
+                                                                handleFileUpload(e, path);
+                                                            }
+                                                        }}
+                                                        className="text-[10px] file:mr-2 file:py-1 file:px-2 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:bg-primary file:text-navy-blue cursor-pointer"
+                                                    />
+                                                </div>
+                                                <div className="flex flex-col gap-1">
+                                                    <label className="text-[10px] font-bold text-gray-500 uppercase">URL ou Caminho</label>
+                                                    <input
+                                                        type="text"
+                                                        value={p.image}
+                                                        onChange={(e) => {
+                                                            const newProducts = [...tempConfig.products];
+                                                            newProducts[i].image = e.target.value;
+                                                            setTempConfig({ ...tempConfig, products: newProducts });
+                                                        }}
+                                                        className="border p-2 rounded-lg w-full text-xs"
+                                                    />
                                                 </div>
                                             </div>
-                                        ))}
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
 
@@ -736,7 +736,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                                 </div>
                             </div>
 
-                             {/* SEO & Favicon Section */}
+                            {/* SEO & Favicon Section */}
                             <div>
                                 <h2 className="text-lg font-bold text-navy-blue mb-4 uppercase tracking-wider border-b pb-2">SEO & Favicon</h2>
                                 <div className="space-y-4">
@@ -1058,7 +1058,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                                                         "{lead.message}"
                                                     </div>
                                                 )}
-                                                <button 
+                                                <button
                                                     onClick={() => deleteLead(lead.id)}
                                                     className="text-red-400 hover:text-red-600 text-xs font-bold"
                                                 >
@@ -1087,7 +1087,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                                             <img src={item.url} alt={item.filename} className="w-full h-full object-cover" />
                                             <div className="absolute inset-x-0 bottom-0 bg-black/60 p-2 opacity-0 group-hover:opacity-100 transition-all backdrop-blur-sm">
                                                 <div className="flex justify-between items-center text-[10px] text-white">
-                                                    <button 
+                                                    <button
                                                         onClick={() => {
                                                             navigator.clipboard.writeText(item.url);
                                                             toast.success('Link copiado!');
@@ -1096,7 +1096,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, onSave, currentConfig 
                                                     >
                                                         Copiar Link
                                                     </button>
-                                                    <button 
+                                                    <button
                                                         onClick={() => deleteMedia(item.filename)}
                                                         className="hover:text-red-400 transition-colors"
                                                     >

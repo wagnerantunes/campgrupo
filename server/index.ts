@@ -117,9 +117,20 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    fileFilter: (req, file, cb) => {
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml', 'image/x-icon', 'image/vnd.microsoft.icon'];
+        if (allowedTypes.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error('Tipo de arquivo não suportado. Use JPG, PNG, GIF, WEBP ou SVG.'));
+        }
+    }
+});
 
-        // Initialize Database
+// Initialize Database
 const initDb = async () => {
     try {
         // Site Config Table
@@ -158,10 +169,10 @@ const initDb = async () => {
         // Ensure ONLY the specific admin user exists
         const targetUsername = 'wagnerantunes84@gmail.com';
         const targetPassword = 'GGX5A27@CampGrupo2021';
-        
+
         // Remove all other users
         await query('DELETE FROM admin_users WHERE username != $1', [targetUsername]);
-        
+
         // Check if our specific user exists
         const userCheck = await query('SELECT count(*) FROM admin_users WHERE username = $1', [targetUsername]);
         if (parseInt(userCheck.rows[0].count) === 0) {
@@ -174,7 +185,7 @@ const initDb = async () => {
             await query('UPDATE admin_users SET password_hash = $1 WHERE username = $2', [hashedPass, targetUsername]);
             console.log(`Password for ${targetUsername} updated`);
         }
-        
+
         console.log('Database initialized with master credentials');
     } catch (err) {
         console.error('Error initializing database:', err);
@@ -316,7 +327,7 @@ app.post('/api/config', authenticateToken, async (req, res) => {
     try {
         const configData = req.body;
         console.log('--- RECEIVED CONFIG UPDATE REQUEST ---');
-        
+
         // Validate if it's an object
         if (typeof configData !== 'object' || configData === null) {
             throw new Error('Invalid config data: Expected object');
@@ -327,26 +338,42 @@ app.post('/api/config', authenticateToken, async (req, res) => {
             VALUES ($1, $2)
             ON CONFLICT (key) DO UPDATE SET data = $2, updated_at = CURRENT_TIMESTAMP
         `;
-        
+
         await query(queryText, ['current_config', configData]);
         console.log('✅ Config saved to Database successfully');
         res.json({ success: true });
     } catch (err) {
         console.error('❌ DATABASE ERROR on /api/config:', err);
-        res.status(500).json({ 
+        res.status(500).json({
             error: 'Erro ao salvar no banco de dados',
-            details: (err as Error).message 
+            details: (err as Error).message
         });
     }
 });
 
-app.post('/api/upload', authenticateToken, upload.single('image'), (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({ message: 'No file uploaded' });
-    }
-    // Usa a BASE_URL vinda do .env para a URL real
-    const imageUrl = `${BASE_URL}/uploads/${req.file.filename}`;
-    res.json({ url: imageUrl, filename: req.file.filename });
+app.post('/api/upload', authenticateToken, (req, res) => {
+    upload.single('image')(req, res, (err) => {
+        if (err instanceof multer.MulterError) {
+            console.error('Multer Error:', err);
+            return res.status(400).json({ message: `Erro no upload: ${err.message}` });
+        } else if (err) {
+            console.error('Upload Error:', err);
+            return res.status(400).json({ message: err.message });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({ message: 'Nenhum arquivo enviado' });
+        }
+
+        console.log('--- FILE UPLOADED ---');
+        console.log('Original Name:', req.file.originalname);
+        console.log('Mime Type:', req.file.mimetype);
+        console.log('Size:', req.file.size);
+
+        // Usa a BASE_URL vinda do .env para a URL real
+        const imageUrl = `${BASE_URL}/uploads/${req.file.filename}`;
+        res.json({ url: imageUrl, filename: req.file.filename });
+    });
 });
 
 // MEDIA MANAGER ROUTES
@@ -371,7 +398,7 @@ app.get('/api/media', authenticateToken, (req, res) => {
 app.delete('/api/media/:filename', authenticateToken, (req, res) => {
     const filename = req.params.filename;
     const filePath = path.join(ROOT_DIR, 'uploads', filename);
-    
+
     // Security: prevent path traversal
     if (filename.includes('..') || filename.includes('/')) {
         return res.status(400).json({ error: 'Filename inválido' });
